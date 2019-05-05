@@ -131,6 +131,27 @@ class MetadataAmazonDataset(models.Model):
         managed = False
         db_table = 'metadata_amazon_dataset'
 
+    def __str__(self):
+        return str (self.asin)
+
+    def __str__(self):
+        return str (self.title)
+
+    def __str__(self):
+        return str (self.price)             
+
+    def __str__(self):
+        return str (self.imurl)
+
+    def __str__(self):
+        return str (self.brand)
+
+    def __str__(self):
+        return str (self.description)
+
+    def __str__(self):
+        return str (self.categories) 
+
 
 class ReviewsAmazonDataset(models.Model):
     reviewerid = models.CharField(primary_key=True, max_length=50)

@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'tiendaweb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'tienda_tg',
+        'NAME': 'tienda_bd',
         'USER': 'postgres',
         'PASSWORD': 'jhon',
         'HOST': 'LOCALHOST',
