@@ -163,3 +163,15 @@ class ReviewsAmazonDataset(models.Model):
         managed = False
         db_table = 'reviews_amazon_dataset'
         unique_together = (('reviewerid', 'asin'),)
+
+    def __str__(self):
+        return str (self.reviewerid)
+
+    def __str__(self):
+        return str (self.asin)
+
+    def __str__(self):
+        return str (self.reviewername)
+
+    def __str__(self):
+        return str (self.overall)

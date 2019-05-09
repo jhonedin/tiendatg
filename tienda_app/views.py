@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from producto_app.views import Getproducto_asin
 
+from django.shortcuts import render, redirect, redirect, get_object_or_404
+from django.contrib.auth.models import User
+from django.contrib import auth
+from producto_app.models import ReviewsAmazonDataset
+
 # Librerias del sistema de recomendación 
 import pandas as pd
 import numpy as np
@@ -13,6 +18,19 @@ from sklearn.neighbors import NearestNeighbors
 def Home(request):
 	return render(request, 'home.html',{})
 
+"""
+def login(request):
+    if request.method == 'POST':
+        #user = get_object_or_404(ReviewsAmazonDataset, reviewerid = request.POST['Password'], reviewername = request.POST['Username'] )
+        user = ReviewsAmazonDataset.objects.filter(reviewerid=request.POST['Password'],reviewername = request.POST['Username'])
+        if user is not None:
+            return render(request, 'tienda.html',{"user":user})
+        
+        else:
+            return render(request, 'tienda.html',{'error':'username or password is incorrect.'})
+    else:
+        return render(request, 'tienda.html')
+"""
 
 def Tienda(request):
 	#asinconsultar = '1028907516'
