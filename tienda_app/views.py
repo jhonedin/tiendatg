@@ -15,31 +15,16 @@ from sklearn.neighbors import NearestNeighbors
 
 # Create your views here.
 
+
 def Home(request):
-	return render(request, 'home.html',{})
-
-"""
-def login(request):
-    if request.method == 'POST':
-        #user = get_object_or_404(ReviewsAmazonDataset, reviewerid = request.POST['Password'], reviewername = request.POST['Username'] )
-        user = ReviewsAmazonDataset.objects.filter(reviewerid=request.POST['Password'],reviewername = request.POST['Username'])
-        if user is not None:
-            return render(request, 'tienda.html',{"user":user})
-        
-        else:
-            return render(request, 'tienda.html',{'error':'username or password is incorrect.'})
-    else:
-        return render(request, 'tienda.html')
-"""
-
-def Tienda(request):
 	#asinconsultar = '1028907516'
 	#producto = Getproducto_asin(asinconsultar)
-	rec = RecomendacionKnn()
-	asinlist = rec[0]
-	distanceslist = rec[1]
-	return render(request, 'tienda.html',{'asinlist':asinlist,'distanceslist':distanceslist}) 
+	#rec = RecomendacionKnn()
+	#asinlist = rec[0]
+	#distanceslist = rec[1]
+	#return render(request, 'tienda_app/home.html',{'asinlist':asinlist,'distanceslist':distanceslist}) 
 	#return render(request, 'tienda.html',{'producto':producto})
+	return render(request, 'tienda_app/home.html',{})
 
 
 def RecomendacionKnn():
