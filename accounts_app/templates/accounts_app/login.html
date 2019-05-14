@@ -37,17 +37,30 @@
                 <!--Continually expanded and constantly improved Inspinia Admin Them (IN+)-->
             </p>
             <p>Inicia sesion. Para vivir una experiencia fantastica.</p>
-            <form class="m-t" method="post" role="form" action="{% url 'login' %}">
+			      <form class="m-t" method="POST" >
+                {% csrf_token %}
+                	<!--{{ form.as_p }}  -->
+                <label> Nombre </label>
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Username" required="">
+                    {{ form.reviewername }}
                 </div>
+                <label> Contraseña </label>
                 <div class="form-group">
-                    <input type="password" class="form-control" placeholder="Password" required="">
+                    {{ form.reviewerid }}
                 </div>
                 <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
-
-                
             </form>
+	<!--
+            <form class="m-t" method="post" role="form" action="{% url 'login' %}">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="reviewername" required="">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="reviewerid" required="">
+                </div>
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+            </form>
+-->
         </div>
     </div>
 
