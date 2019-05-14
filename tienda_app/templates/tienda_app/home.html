@@ -3,6 +3,38 @@
 {% block content %}
 <h3>USTED SE HA IDENTIFICADO COMO</h3>
 <p>Nombre: {{ user.reviewername}}  /  ID: {{ user.reviewerid }} </p>
+<br>
+
+<table>
+  <tr>
+    <th> asin </th>
+    <th> --- </th>
+    <th> distancia </th>
+  <tr>
+  <tr>
+    <td>
+    <table>
+      {% for asinlist in asinlist %}
+      <tr>
+        <td> {{ asinlist }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+    </td>
+    <td>
+       ---
+    </td>
+    <td>
+    <table>
+      {% for distanceslist in distanceslist %}
+      <tr>
+        <td> {{ distanceslist }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+   </td>
+  </tr>
+</table>
 
 
 {% endblock %}

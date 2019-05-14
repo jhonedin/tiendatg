@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from producto_app.models import ReviewsAmazonDataset
 
-# Librerias del sistema de recomendación 
+# Librerias del sistema de recomendación
 import pandas as pd
 import numpy as np
 import psycopg2
@@ -16,18 +16,15 @@ from sklearn.neighbors import NearestNeighbors
 # Create your views here.
 
 
-def Home(request):
-	#asinconsultar = '1028907516'
-	#producto = Getproducto_asin(asinconsultar)
-	#rec = RecomendacionKnn()
-	#asinlist = rec[0]
-	#distanceslist = rec[1]
-	#return render(request, 'tienda_app/home.html',{'asinlist':asinlist,'distanceslist':distanceslist}) 
-	#return render(request, 'tienda.html',{'producto':producto})
-	return render(request, 'tienda_app/home.html',{})
+def Home(request,asin):
+	asinconsultar = asin
+	rec = RecomendacionKnn(asinconsultar)
+	asinlist = rec[0]
+	distanceslist = rec[1]
+	return render(request, 'tienda_app/home.html',{'asinlist':asinlist,'distanceslist':distanceslist})
 
 
-def RecomendacionKnn():
+def RecomendacionKnn(asinconsultar):
 	try:
 		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
 		print("Conexion a la base de datos exitosa \n")
@@ -45,9 +42,9 @@ def RecomendacionKnn():
 	ratings_matrix_sparse = csr_matrix(ratings_pivot.values.astype(float))
 	model_knn = NearestNeighbors(metric = 'cosine', algorithm = 'brute')
 	model_knn.fit(ratings_matrix_sparse)
-	reviewerid_matriz_productos = ratings_pivot.index     
+	reviewerid_matriz_productos = ratings_pivot.index
 	lista_reviewerid_productos = list(reviewerid_matriz_productos)
-	ind_producto_target = lista_reviewerid_productos.index('B00005TQI7')
+	ind_producto_target = lista_reviewerid_productos.index(asinconsultar) # 'B00005TQI7'
 	query_index = ind_producto_target
 	distances, indices = model_knn.kneighbors(ratings_pivot.iloc[query_index, :].values.reshape(1, -1), n_neighbors = 6) # con values corregi el error de AttributeError: 'Series' object has no attribute 'reshape'
 	#rec =  distances, indices
@@ -60,6 +57,6 @@ def RecomendacionKnn():
 			#print ('{0}: {1}, with distance of {2}:'.format(i, ratings_pivot.index[indices.flatten()[i]], distances.flatten()[i]))
 			asinlist.append(ratings_pivot.index[indices.flatten()[i]])
 			distanceslist.append(distances.flatten()[i])
-	rec = asinlist, distanceslist 
+	rec = asinlist, distanceslist
 	return rec
-	#return render(request, 'tienda.html',{'asinlist':asinlist,'distanceslist':distanceslist}) 
+	#return render(request, 'tienda.html',{'asinlist':asinlist,'distanceslist':distanceslist})
