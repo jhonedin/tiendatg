@@ -7,9 +7,12 @@ from producto_app.models import ReviewsAmazonDataset # importo el modelo del rev
 
 def login(request):
 	if request.method == 'POST':
-		user = get_object_or_404(ReviewsAmazonDataset, reviewerid = request.POST['reviewerid'], reviewername = request.POST['reviewername'] )
+		#user = get_object_or_404(ReviewsAmazonDataset, reviewerid = request.POST['reviewerid'], reviewername = request.POST['reviewername'] )
+		consulta = ReviewsAmazonDataset.objects.filter(reviewerid = request.POST['reviewerid'],reviewername = request.POST['reviewername'])
+		user = consulta[0]
 		if user is not None:
-			asinconsultar = 'B00005TQI7'
+			#asinconsultar = 'B00005TQI7'
+			asinconsultar = user.asin.asin
 			print("asin consultar")
 			print(asinconsultar)
 
