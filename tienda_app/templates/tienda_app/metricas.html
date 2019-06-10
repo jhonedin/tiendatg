@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>METRICAS DE LA RECOMENDACION</h2>
+<br>
+<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
+  <tr>
+    <th> asin </th>
+    <th class="text-right"> distancia </th>
+  <tr>
+  <tr>
+    <td>
+      <table class="footable table table-stripped toggle-arrow-tiny">
+        {% for asinlist in asinlist %}
+        <tr>
+          <td > {{ asinlist }} </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+    <table class="footable table table-stripped toggle-arrow-tiny">
+      {% for distanceslist in distanceslist %}
+      <tr>
+        <td class="text-right"> {{ distanceslist }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+   </td>
+  </tr>
+</table>
+
+<br>
+
+
+{% endblock %}

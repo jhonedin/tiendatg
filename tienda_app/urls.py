@@ -4,4 +4,5 @@ import string
 
 urlpatterns = [
     path('home/', views.Home, name='Home'),
+    #path('metricas/', views.Metricas, name='Metricas'),
 ]

@@ -4,37 +4,80 @@
 <h3>USTED SE HA IDENTIFICADO COMO</h3>
 <p>Nombre: {{ user.reviewername}}  /  ID: {{ user.reviewerid }} </p>
 <br>
+{% for ObjProducto1 in ObjProducto1 %}
+  <div class="">
+    {{ ObjProducto1.asin }}
+  </div>
+  <div class="">
+    <img src="{{ ObjProducto1.imurl }}" alt="">
+  </div>
+{% endfor %}
 
-<table>
+{% for ObjProducto2 in ObjProducto2 %}
+  <div class="">
+    {{ ObjProducto2.asin }}
+  </div>
+  <div class="">
+    <img src="{{ ObjProducto2.imurl }}" alt="">
+  </div>
+{% endfor %}
+
+{% for ObjProducto3 in ObjProducto3 %}
+  <div class="">
+    {{ ObjProducto3.asin }}
+  </div>
+  <div class="">
+    <img src="{{ ObjProducto3.imurl }}" alt="">
+  </div>
+{% endfor %}
+
+{% for ObjProducto4 in ObjProducto4 %}
+  <div class="">
+    {{ ObjProducto4.asin }}
+  </div>
+  <div class="">
+    <img src="{{ ObjProducto4.imurl }}" alt="">
+  </div>
+{% endfor %}
+
+{% for ObjProducto5 in ObjProducto5 %}
+  <div class="">
+    {{ ObjProducto5.asin }}
+  </div>
+  <div class="">
+    <img src="{{ ObjProducto5.imurl }}" alt="">
+  </div>
+{% endfor %}
+
+<!--
+<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
   <tr>
     <th> asin </th>
-    <th> --- </th>
-    <th> distancia </th>
+    <th class="text-right"> distancia </th>
   <tr>
   <tr>
     <td>
-    <table>
-      {% for asinlist in asinlist %}
-      <tr>
-        <td> {{ asinlist }} </td>
-      </tr>
-      {% endfor %}
-    </table>
+      <table class="footable table table-stripped toggle-arrow-tiny">
+        {% for asinlist in asinlist %}
+        <tr>
+          <td > {{ asinlist }} </td>
+        </tr>
+        {% endfor %}
+      </table>
     </td>
     <td>
-       ---
-    </td>
-    <td>
-    <table>
+    <table class="footable table table-stripped toggle-arrow-tiny">
       {% for distanceslist in distanceslist %}
       <tr>
-        <td> {{ distanceslist }} </td>
+        <td class="text-right"> {{ distanceslist }} </td>
       </tr>
       {% endfor %}
     </table>
    </td>
   </tr>
 </table>
+-->
+<br>
 
 
 {% endblock %}

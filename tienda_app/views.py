@@ -1,11 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from producto_app.views import Getproducto_asin
 
 from django.shortcuts import render, redirect, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import auth
 from producto_app.models import ReviewsAmazonDataset
-
+from producto_app.models import MetadataAmazonDataset
 # Librerias del sistema de recomendación
 import pandas as pd
 import numpy as np
@@ -14,15 +14,29 @@ from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
 # Create your views here.
-
+asinlistGlobal = []
+distanceslistGlobal = []
 
 def Home(request,asin):
 	asinconsultar = asin
-	rec = RecomendacionKnn(asinconsultar)
-	asinlist = rec[0]
-	distanceslist = rec[1]
-	return render(request, 'tienda_app/home.html',{'asinlist':asinlist,'distanceslist':distanceslist})
+	objListaDeProductos = RecomendacionKnn(asinconsultar)
+	return render(request, 'tienda_app/home.html',{'objListaDeProductos':objListaDeProductos})
+	#rec = RecomendacionKnn(asinconsultar)
+	#asinlist = rec[0]
+	#distanceslist = rec[1]
+	#return render(request, 'tienda_app/home.html',{'asinlist':asinlist,'distanceslist':distanceslist})
 
+def metricas(request):
+	asinlist = asinlistGlobal
+	distanceslist = distanceslistGlobal
+	return render(request, 'tienda_app/metricas.html',{'asinlist':asinlist,'distanceslist':distanceslist})
+
+# Función encargada de buscar un producto por su id en este caso el asin del producto
+# Entrada: un String que tiene el identificador unico del producto o su asin
+# Salida: Un objeto del producto del asin correspondiente
+def buscarProductoxAsin(asin):
+	objProducto = MetadataAmazonDataset.objects.filter(asin=str(asin))
+	return objProducto
 
 def RecomendacionKnn(asinconsultar):
 	try:
@@ -58,5 +72,8 @@ def RecomendacionKnn(asinconsultar):
 			asinlist.append(ratings_pivot.index[indices.flatten()[i]])
 			distanceslist.append(distances.flatten()[i])
 	rec = asinlist, distanceslist
+	global asinlistGlobal
+	global distanceslistGlobal
+	asinlistGlobal = asinlist
+	distanceslistGlobal = distanceslist
 	return rec
-	#return render(request, 'tienda.html',{'asinlist':asinlist,'distanceslist':distanceslist})
