@@ -1,6 +1,4 @@
-from django.shortcuts import render, get_object_or_404
 from producto_app.views import Getproducto_asin
-
 from django.shortcuts import render, redirect, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import auth
@@ -40,6 +38,10 @@ def metricas(request):
 def buscarProductoxAsin(asin):
 	objProducto = MetadataAmazonDataset.objects.filter(asin=str(asin))
 	return objProducto
+
+def galeriaProducto(request):
+	objGaleriaList = MetadataAmazonDataset.objects.filter(price='22.95')
+	return render(request, 'tienda_app/galeria.html',{'objGaleriaList':objGaleriaList})
 
 def RecomendacionKnn(asinconsultar):
 	try:

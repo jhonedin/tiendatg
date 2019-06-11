@@ -18,6 +18,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from tienda_app.views import metricas
+from tienda_app.views import galeriaProducto
 from accounts_app.views import login
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
     path('accounts_app/', include('accounts_app.urls')),
     path('login/',login, name='login'),
     path('metricas/',metricas, name='metricas'),
+    path('galeriaProducto/',galeriaProducto, name='galeriaProducto'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>GALERIA DE PRODUCTOS</h2>
+<br>
+{% for objGaleriaList in objGaleriaList %}
+
+<div class="row">
+  <div class="col-md-7">
+
+      <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
+        <tr>
+          <th> Codigo </th>
+          <th> Titulo </th>
+          <th> Imagen </th>
+          <th> Precio </th>
+          <th> Marca </th>
+          <th> Descripción </th>
+          <th> Categorias </th>
+        </tr>
+        <tr>
+          <td>  {{ objGaleriaList.asin }} </td>
+          <td>  {{ objGaleriaList.title }} </td>
+          <td>  <img src="{{ objGaleriaList.imurl }}" alt="" width="65" height="75" > </td>
+          <td>  {{ objGaleriaList.price }} </td>
+          <td>  {{ objGaleriaList.brand }} </td>
+          <td>  {{ objGaleriaList.description }} </td>
+          <td>  {{ objGaleriaList.categories }} </td>
+        </tr>
+      </table>
+
+ </div>
+</div>
+
+
+{% endfor %}
+<br>
+{% endblock %}
