@@ -19,6 +19,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from tienda_app.views import metricas
 from tienda_app.views import galeriaProducto
+from tienda_app.views import Home
+from tienda_app.views import vistaRecomendacionKnn
+from tienda_app.views import vistaRecomendacionSvm
 from accounts_app.views import login
 
 urlpatterns = [
@@ -27,6 +30,9 @@ urlpatterns = [
     path('tienda_app/', include('tienda_app.urls')),
     path('accounts_app/', include('accounts_app.urls')),
     path('login/',login, name='login'),
+    path('Home/',Home, name='Home'),
     path('metricas/',metricas, name='metricas'),
     path('galeriaProducto/',galeriaProducto, name='galeriaProducto'),
+    path('vistaRecomendacionKnn/',vistaRecomendacionKnn, name='vistaRecomendacionKnn'),
+    path('vistaRecomendacionSvm/',vistaRecomendacionSvm, name='vistaRecomendacionSvm'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
