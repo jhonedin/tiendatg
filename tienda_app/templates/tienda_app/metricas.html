@@ -3,6 +3,11 @@
 {% block content %}
 <h2>METRICAS DE LA RECOMENDACION</h2>
 <br>
+<div class="">
+<h3>Tiempo de la recomendación: {{ finalTimeRec }} segundos</h3>
+</div>
+<div class="">
+<h4>Lista de productos recomendados:</h4>
 <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
   <tr>
     <th> asin </th>
@@ -29,8 +34,6 @@
    </td>
   </tr>
 </table>
-
+</div>
 <br>
-
-
 {% endblock %}

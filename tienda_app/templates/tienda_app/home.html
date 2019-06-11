@@ -12,7 +12,9 @@
          <div class="col-md-3">
              <div class="ibox">
                {% for ObjProducto1 in ObjProducto1 %}
-                  <img src="{{ ObjProducto1.imurl }}" alt="" width="245" height="350" >
+                    <div class="">
+                        <img src="{{ ObjProducto1.imurl }}" alt="" width="245" height="350" >
+                     </div>
                      <div class="product-desc">
                          <span class="product-price">
                               Precio: $ {{ ObjProducto1.price }}
@@ -31,8 +33,9 @@
                          </div>
                      </div>
 
-              {% endfor %}
+                {% endfor %}
              </div>
+
          </div>
          <!-- ************************ -->
          <div class="col-md-3">

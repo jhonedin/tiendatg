@@ -10,12 +10,14 @@ from producto_app.models import MetadataAmazonDataset
 import pandas as pd
 import numpy as np
 import psycopg2
+import time
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 
 # Create your views here.
 asinlistGlobal = []
 distanceslistGlobal = []
+finalTimeGlobal = 0
 
 def Home(request,asin):
 	asinconsultar = asin
@@ -29,7 +31,8 @@ def Home(request,asin):
 def metricas(request):
 	asinlist = asinlistGlobal
 	distanceslist = distanceslistGlobal
-	return render(request, 'tienda_app/metricas.html',{'asinlist':asinlist,'distanceslist':distanceslist})
+	finalTimeRec = finalTimeGlobal
+	return render(request, 'tienda_app/metricas.html',{'asinlist':asinlist,'distanceslist':distanceslist,'finalTimeRec':finalTimeRec})
 
 # Función encargada de buscar un producto por su id en este caso el asin del producto
 # Entrada: un String que tiene el identificador unico del producto o su asin
@@ -46,6 +49,7 @@ def RecomendacionKnn(asinconsultar):
 		print ("I am unable to connect to the database")
 	query1 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' """
 	data_query = pd.read_sql(query1, conn)
+	startTime = time.time()
 	print("IMPLEMENTACION RECOMENDACION")
 	print("\n")
 	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
@@ -74,6 +78,10 @@ def RecomendacionKnn(asinconsultar):
 	rec = asinlist, distanceslist
 	global asinlistGlobal
 	global distanceslistGlobal
+	global finalTimeGlobal
 	asinlistGlobal = asinlist
 	distanceslistGlobal = distanceslist
+	finalTime = time.time() - startTime
+	finalTimeGlobal = finalTime
+	print ('El script tomó {0} segundos'.format(finalTime))
 	return rec
