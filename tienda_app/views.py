@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from producto_app.models import ReviewsAmazonDataset
 from producto_app.models import MetadataAmazonDataset
-
+from accounts_app.views import getUserConsultaGlobal
 # Librerias del sistema de recomendación
 import pandas as pd
 import numpy as np
@@ -19,6 +19,7 @@ distanceslistGlobal = []
 finalTimeGlobal = 0
 
 def Home(request):
+	user = getUserConsultaGlobal()
 	asinlist = asinlistGlobal
 	ObjProducto1 = buscarProductoxAsin(asinlist[0])
 	ObjProducto2 = buscarProductoxAsin(asinlist[1])
@@ -26,17 +27,40 @@ def Home(request):
 	ObjProducto4 = buscarProductoxAsin(asinlist[3])
 	ObjProducto5 = buscarProductoxAsin(asinlist[4])
 
-	return render(request, 'tienda_app/home.html',{
+	return render(request, 'tienda_app/home.html',{'user':user,
 	'ObjProducto1':ObjProducto1,
 	'ObjProducto2':ObjProducto2,
 	'ObjProducto3':ObjProducto3,
 	'ObjProducto4':ObjProducto4,
 	'ObjProducto5':ObjProducto5})
-	#return render(request, 'tienda_app/home.html',{'objListaDeProductos':objListaDeProductos})
-	#rec = RecomendacionKnn(asinconsultar)
-	#asinlist = rec[0]
-	#distanceslist = rec[1]
-	#return render(request, 'tienda_app/home.html',{'asinlist':asinlist,'distanceslist':distanceslist})
+
+# Función encargarda de renderizar la recomendación mediante el algoritmo KNN
+def vistaRecomendacionKnn(request):
+	user = getUserConsultaGlobal()
+	asinconsultar = user.asin.asin
+	print("asin consultar")
+	print(asinconsultar)
+	rec = RecomendacionKnn(asinconsultar)
+	asinlist = rec[0]
+	distanceslist = rec[1]
+	ObjProducto1 = buscarProductoxAsin(asinlist[0])
+	ObjProducto2 = buscarProductoxAsin(asinlist[1])
+	ObjProducto3 = buscarProductoxAsin(asinlist[2])
+	ObjProducto4 = buscarProductoxAsin(asinlist[3])
+	ObjProducto5 = buscarProductoxAsin(asinlist[4])
+
+	return render(request, 'tienda_app/knn.html',{'user':user,
+	'ObjProducto1':ObjProducto1,
+	'ObjProducto2':ObjProducto2,
+	'ObjProducto3':ObjProducto3,
+	'ObjProducto4':ObjProducto4,
+	'ObjProducto5':ObjProducto5})
+
+# Función encargarda de renderizar la recomendación mediante el algoritmo SVM
+def vistaRecomendacionSvm(request):
+	recomendacion = [1,2,3]
+	return render(request, 'tienda_app/svm.html',{'recomendacion':recomendacion})
+
 
 def metricas(request):
 	asinlist = asinlistGlobal
@@ -55,16 +79,6 @@ def buscarProductoxAsin(asin):
 def galeriaProducto(request):
 	objGaleriaList = MetadataAmazonDataset.objects.filter(price='22.95')
 	return render(request, 'tienda_app/galeria.html',{'objGaleriaList':objGaleriaList})
-
-# Función encargarda de renderizar la recomendación mediante el algoritmo KNN
-def vistaRecomendacionKnn(request):
-	recomendacion = [1,2,3]
-	return render(request, 'tienda_app/knn.html',{'recomendacion':recomendacion})
-
-# Función encargarda de renderizar la recomendación mediante el algoritmo SVM
-def vistaRecomendacionSvm(request):
-	recomendacion = [1,2,3]
-	return render(request, 'tienda_app/svm.html',{'recomendacion':recomendacion})
 
 def RecomendacionKnn(asinconsultar):
 	try:
