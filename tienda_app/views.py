@@ -10,13 +10,19 @@ import pandas as pd
 import numpy as np
 import psycopg2
 import time
+import warnings
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
+from sklearn.decomposition import TruncatedSVD
 
 # Create your views here.
 asinlistGlobal = []
 distanceslistGlobal = []
 finalTimeGlobal = 0
+
+asinlistGlobalSVD = []
+distanceslistGlobalSVD = []
+finalTimeGlobalSVD = 0
 
 def Home(request):
 	user = getUserConsultaGlobal()
@@ -57,16 +63,40 @@ def vistaRecomendacionKnn(request):
 	'ObjProducto5':ObjProducto5})
 
 # Función encargarda de renderizar la recomendación mediante el algoritmo SVM
-def vistaRecomendacionSvm(request):
+def vistaRecomendacionSvd(request):
+	user = getUserConsultaGlobal()
+	asinconsultar = user.asin.asin
+	print("asin consultar")
+	print(asinconsultar)
+	listaAsinProd = []
+	rec_svd = recomendacionColaborativaSVD(asinconsultar)
+	for i in range(0,len(rec_svd)):
+		tupla = rec_svd[i]
+		listaAsinProd.append(tupla[0])
+	objProductoSvd = buscarProductoxAsin(listaAsinProd[0])
+	#print(str(objProductoSvd.asin.asin)) 
 	recomendacion = [1,2,3]
-	return render(request, 'tienda_app/svm.html',{'recomendacion':recomendacion})
+	return render(request, 'tienda_app/svd.html',{'recomendacion':recomendacion})
 
 
 def metricas(request):
+	# Variables metricas algoritmo knn
 	asinlist = asinlistGlobal
 	distanceslist = distanceslistGlobal
 	finalTimeRec = finalTimeGlobal
-	return render(request, 'tienda_app/metricas.html',{'asinlist':asinlist,'distanceslist':distanceslist,'finalTimeRec':finalTimeRec})
+	######
+	# Variables metricas algoritmo svd
+	asinlistsvd = asinlistGlobalSVD
+	distanceslistsvd = distanceslistGlobalSVD
+	finalTimesvd = finalTimeGlobalSVD
+	return render(request, 'tienda_app/metricas.html',{
+	'asinlist':asinlist,
+	'distanceslist':distanceslist,
+	'finalTimeRec':finalTimeRec,
+	'asinlistsvd':asinlistsvd,
+	'distanceslistsvd':distanceslistsvd,
+	'finalTimesvd':finalTimesvd
+	})
 
 # Función encargada de buscar un producto por su id en este caso el asin del producto
 # Entrada: un String que tiene el identificador unico del producto o su asin
@@ -89,7 +119,7 @@ def RecomendacionKnn(asinconsultar):
 	query1 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' """
 	data_query = pd.read_sql(query1, conn)
 	startTime = time.time()
-	print("IMPLEMENTACION RECOMENDACION")
+	print("IMPLEMENTACION RECOMENDACION KNN")
 	print("\n")
 	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
 	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
@@ -124,3 +154,53 @@ def RecomendacionKnn(asinconsultar):
 	finalTimeGlobal = finalTime
 	print ('El script tomó {0} segundos'.format(finalTime))
 	return rec
+
+
+def recomendacionColaborativaSVD(asinconsultar):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa \n")
+	except:
+		print ("I am unable to connect to the database")
+
+	query2 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' """
+	data_query = pd.read_sql(query2, conn)
+	startTime = time.time()
+	print("IMPLEMENTACION RECOMENDACION COLABORATIVA SVD")
+	print("\n")
+	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
+	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
+	ratings_minimo = 100
+	productos_mas_populares = totales_ratings.query('cuentaTotalRatings >= @ratings_minimo')
+	ratings_pivot = productos_mas_populares.pivot(index = 'asin', columns = 'reviewerid', values = 'overall').fillna(0)
+	X = ratings_pivot.values
+	SVD = TruncatedSVD(n_components=20, random_state=22, n_iter=10)
+	matriz_svd = SVD.fit_transform(X)
+	warnings.filterwarnings("ignore",category =RuntimeWarning)
+	matriz_corr = np.corrcoef(matriz_svd)
+	asin_matriz_productos = ratings_pivot.index
+	lista_asin_productos = list(asin_matriz_productos)
+	rec_svd=[]
+	asin_producto = asinconsultar
+	ind_producto_target = lista_asin_productos.index(asin_producto)
+	lista_producto_corr_target = list(matriz_corr[ind_producto_target]) #calificaciones de productos respecto a target
+	max_indices=[]
+	prueba=[]
+	for i in lista_producto_corr_target:
+		if (i<1.0) & (i>0.8):
+			max_ind= lista_producto_corr_target.index(i)
+			max_indices.append(max_ind)
+			asin_ind = asin_matriz_productos[max_ind]
+			prueba.append([asin_ind,i])
+	rec_svd= sorted(prueba, key=lambda x:x[0], reverse=True)[1:10]
+	global asinlistGlobalSVD
+	global distanceslistGlobalSVD
+	global finalTimeGlobalSVD
+	for i in range(0,len(rec_svd)):
+		tupla = rec_svd[i]
+		asinlistGlobalSVD.append(tupla[0])
+		distanceslistGlobalSVD.append(tupla[1])
+	finalTime = time.time() - startTime
+	finalTimeGlobalSVD = finalTime
+	print ('El script tomó {0} segundos'.format(finalTime))
+	return rec_svd

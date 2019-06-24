@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>METRICAS DE LA RECOMENDACION</h2>
+<h2>METRICAS DE LA RECOMENDACION ALGORITMO KNN</h2>
 <br>
 <div class="">
 <h3>Tiempo de la recomendación: {{ finalTimeRec }} segundos</h3>
@@ -10,8 +10,8 @@
 <h4>Lista de productos recomendados:</h4>
 <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
   <tr>
-    <th> asin </th>
-    <th class="text-right"> distancia </th>
+    <th> ID Producto </th>
+    <th class="text-right"> Distancia </th>
   <tr>
   <tr>
     <td>
@@ -36,4 +36,41 @@
 </table>
 </div>
 <br>
+
+<h2>METRICAS DE LA RECOMENDACION ALGORITMO FILTRADO COLABORATIVO SVD</h2>
+<br>
+<div class="">
+<h3>Tiempo de la recomendación: {{ finalTimesvd }} segundos</h3>
+</div>
+<div class="">
+<h4>Lista de productos recomendados:</h4>
+<table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
+  <tr>
+    <th> ID Producto </th>
+    <th class="text-right"> Distancia </th>
+  <tr>
+  <tr>
+    <td>
+      <table class="footable table table-stripped toggle-arrow-tiny">
+        {% for asinlistsvd in asinlistsvd %}
+        <tr>
+          <td > {{ asinlistsvd }} </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </td>
+    <td>
+    <table class="footable table table-stripped toggle-arrow-tiny">
+      {% for distanceslistsvd in distanceslistsvd %}
+      <tr>
+        <td class="text-right"> {{ distanceslistsvd }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+   </td>
+  </tr>
+</table>
+</div>
+<br>
+
 {% endblock %}

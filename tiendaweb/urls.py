@@ -21,7 +21,7 @@ from tienda_app.views import metricas
 from tienda_app.views import galeriaProducto
 from tienda_app.views import Home
 from tienda_app.views import vistaRecomendacionKnn
-from tienda_app.views import vistaRecomendacionSvm
+from tienda_app.views import vistaRecomendacionSvd
 from accounts_app.views import login
 
 urlpatterns = [
@@ -34,5 +34,5 @@ urlpatterns = [
     path('metricas/',metricas, name='metricas'),
     path('galeriaProducto/',galeriaProducto, name='galeriaProducto'),
     path('vistaRecomendacionKnn/',vistaRecomendacionKnn, name='vistaRecomendacionKnn'),
-    path('vistaRecomendacionSvm/',vistaRecomendacionSvm, name='vistaRecomendacionSvm'),
+    path('vistaRecomendacionSvd/',vistaRecomendacionSvd, name='vistaRecomendacionSvd'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
