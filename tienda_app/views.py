@@ -49,18 +49,49 @@ def vistaRecomendacionKnn(request):
 	rec = RecomendacionKnn(asinconsultar)
 	asinlist = rec[0]
 	distanceslist = rec[1]
-	ObjProducto1 = buscarProductoxAsin(asinlist[0])
-	ObjProducto2 = buscarProductoxAsin(asinlist[1])
-	ObjProducto3 = buscarProductoxAsin(asinlist[2])
-	ObjProducto4 = buscarProductoxAsin(asinlist[3])
-	ObjProducto5 = buscarProductoxAsin(asinlist[4])
+	ObjProducto1 = None
+	ObjProducto2 = None
+	ObjProducto3 = None
+	ObjProducto4 = None
+	ObjProducto5 = None
+	ObjProducto6 = None
+	ObjProducto7 = None
+	ObjProducto8 = None
+	ObjProducto9 = None
+	ObjProducto10 = None
+	for i in range(0,len(asinlist)):
+		if(i==0):
+			ObjProducto1 = buscarProductoxAsin(asinlist[i])
+		if(i==1):
+			ObjProducto2 = buscarProductoxAsin(asinlist[i])
+		if(i==2):
+			ObjProducto3 = buscarProductoxAsin(asinlist[i])
+		if(i==3):
+			ObjProducto4 = buscarProductoxAsin(asinlist[i])
+		if(i==4):
+			ObjProducto5 = buscarProductoxAsin(asinlist[i])
+		if(i==5):
+			ObjProducto6 = buscarProductoxAsin(asinlist[i])
+		if(i==6):
+			ObjProducto7 = buscarProductoxAsin(asinlist[i])
+		if(i==7):
+			ObjProducto8 = buscarProductoxAsin(asinlist[i])
+		if(i==8):
+			ObjProducto9 = buscarProductoxAsin(asinlist[i])
+		if(i==9):
+			ObjProducto10 = buscarProductoxAsin(asinlist[i])
 
 	return render(request, 'tienda_app/knn.html',{'user':user,
 	'ObjProducto1':ObjProducto1,
 	'ObjProducto2':ObjProducto2,
 	'ObjProducto3':ObjProducto3,
 	'ObjProducto4':ObjProducto4,
-	'ObjProducto5':ObjProducto5})
+	'ObjProducto5':ObjProducto5,
+	'ObjProducto6':ObjProducto6,
+	'ObjProducto7':ObjProducto7,
+	'ObjProducto8':ObjProducto8,
+	'ObjProducto9':ObjProducto9,
+	'ObjProducto10':ObjProducto10})
 
 # Función encargarda de renderizar la recomendación mediante el algoritmo SVM
 def vistaRecomendacionSvd(request):
@@ -68,15 +99,54 @@ def vistaRecomendacionSvd(request):
 	asinconsultar = user.asin.asin
 	print("asin consultar")
 	print(asinconsultar)
-	listaAsinProd = []
+	asinlist= []
 	rec_svd = recomendacionColaborativaSVD(asinconsultar)
 	for i in range(0,len(rec_svd)):
 		tupla = rec_svd[i]
-		listaAsinProd.append(tupla[0])
-	objProductoSvd = buscarProductoxAsin(listaAsinProd[0])
-	#print(str(objProductoSvd.asin.asin)) 
-	recomendacion = [1,2,3]
-	return render(request, 'tienda_app/svd.html',{'recomendacion':recomendacion})
+		asinlist.append(tupla[0])
+
+	ObjProducto1 = None
+	ObjProducto2 = None
+	ObjProducto3 = None
+	ObjProducto4 = None
+	ObjProducto5 = None
+	ObjProducto6 = None
+	ObjProducto7 = None
+	ObjProducto8 = None
+	ObjProducto9 = None
+	ObjProducto10 = None
+	for i in range(0,len(asinlist)):
+		if(i==0):
+			ObjProducto1 = buscarProductoxAsin(asinlist[i])
+		if(i==1):
+			ObjProducto2 = buscarProductoxAsin(asinlist[i])
+		if(i==2):
+			ObjProducto3 = buscarProductoxAsin(asinlist[i])
+		if(i==3):
+			ObjProducto4 = buscarProductoxAsin(asinlist[i])
+		if(i==4):
+			ObjProducto5 = buscarProductoxAsin(asinlist[i])
+		if(i==5):
+			ObjProducto6 = buscarProductoxAsin(asinlist[i])
+		if(i==6):
+			ObjProducto7 = buscarProductoxAsin(asinlist[i])
+		if(i==7):
+			ObjProducto8 = buscarProductoxAsin(asinlist[i])
+		if(i==8):
+			ObjProducto9 = buscarProductoxAsin(asinlist[i])
+		if(i==9):
+			ObjProducto10 = buscarProductoxAsin(asinlist[i])
+	return render(request, 'tienda_app/svd.html',{'user':user,
+	'ObjProducto1':ObjProducto1,
+	'ObjProducto2':ObjProducto2,
+	'ObjProducto3':ObjProducto3,
+	'ObjProducto4':ObjProducto4,
+	'ObjProducto5':ObjProducto5,
+	'ObjProducto6':ObjProducto6,
+	'ObjProducto7':ObjProducto7,
+	'ObjProducto8':ObjProducto8,
+	'ObjProducto9':ObjProducto9,
+	'ObjProducto10':ObjProducto10})
 
 
 def metricas(request):
@@ -142,8 +212,9 @@ def RecomendacionKnn(asinconsultar):
 			print ('Recommendations for {0}:\n'.format(ratings_pivot.index[query_index]))
 		else:
 			#print ('{0}: {1}, with distance of {2}:'.format(i, ratings_pivot.index[indices.flatten()[i]], distances.flatten()[i]))
-			asinlist.append(ratings_pivot.index[indices.flatten()[i]])
-			distanceslist.append(distances.flatten()[i])
+			if(distances.flatten()[i] < 1):
+				asinlist.append(ratings_pivot.index[indices.flatten()[i]])
+				distanceslist.append(distances.flatten()[i])
 	rec = asinlist, distanceslist
 	global asinlistGlobal
 	global distanceslistGlobal
@@ -196,10 +267,14 @@ def recomendacionColaborativaSVD(asinconsultar):
 	global asinlistGlobalSVD
 	global distanceslistGlobalSVD
 	global finalTimeGlobalSVD
+	asin = []
+	distances = []
 	for i in range(0,len(rec_svd)):
 		tupla = rec_svd[i]
-		asinlistGlobalSVD.append(tupla[0])
-		distanceslistGlobalSVD.append(tupla[1])
+		asin.append(tupla[0])
+		distances.append(tupla[1])
+	asinlistGlobalSVD = asin
+	distanceslistGlobalSVD = distances
 	finalTime = time.time() - startTime
 	finalTimeGlobalSVD = finalTime
 	print ('El script tomó {0} segundos'.format(finalTime))
