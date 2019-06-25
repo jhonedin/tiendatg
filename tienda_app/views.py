@@ -43,12 +43,16 @@ def Home(request):
 # Función encargarda de renderizar la recomendación mediante el algoritmo KNN
 def vistaRecomendacionKnn(request):
 	user = getUserConsultaGlobal()
+	 # Del review se extrae el usuario, y el asin (id producto) asociado a ese review de compra
+	 # con respecto al cual se realizara la recomendacion
 	asinconsultar = user.asin.asin
 	print("asin consultar")
 	print(asinconsultar)
-	rec = RecomendacionKnn(asinconsultar)
-	asinlist = rec[0]
-	distanceslist = rec[1]
+	rec = RecomendacionKnn(asinconsultar) # rec contiene rec=[[lista_id_productos],[lista_distanciasknn_productos]]
+	asinlist = rec[0] # extrae los id de los productos recomendados
+	distanceslist = rec[1] # extrae las distancias knn de los productos recomendados
+	# Se espera que en knn se recomiende maximo 10 productos, aunque la cantidad de productos que se recomienden
+	# dependera de ajustar el parametro n_neighbors, en la función RecomendacionKnn
 	ObjProducto1 = None
 	ObjProducto2 = None
 	ObjProducto3 = None
