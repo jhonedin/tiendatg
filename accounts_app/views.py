@@ -1,7 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from accounts_app.forms import LoginForm
-#from tienda_app.views import RecomendacionKnn
-#from tienda_app.views import buscarProductoxAsin
 # Create your views here.
 
 from producto_app.models import ReviewsAmazonDataset # importo el modelo del review del dataset que esta en la BD
@@ -24,3 +22,6 @@ def login(request):
 	else:
 		form = LoginForm(request.POST)
 	return render(request, 'accounts_app/login.html',{'form':form})
+
+def registro(request):
+	return render(request, 'accounts_app/registro.html',{})
