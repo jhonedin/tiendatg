@@ -181,8 +181,23 @@ def buscarProductoxAsin(asin):
 
 # Función encargada de renderizar la galeria de productos
 def galeriaProducto(request):
-	objGaleriaList = MetadataAmazonDataset.objects.filter(price='22.95')
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa \n")
+	except:
+		print ("I am unable to connect to the database")
+	query = """SELECT * FROM metadata_amazon_dataset m  WHERE m.price !='0.00' AND m.description !='Sin descripcion' AND m.description !='' AND m.brand != 'Sin marca' """
+	data_query = pd.read_sql(query, conn)
+	print("data_query")
+	print(data_query)
+	print("data_query primera pos")
+	print(data_query.loc[0:,'asin'].values)
+	listaIDFiltrados = list(data_query.loc[0:,'asin'].values)
+	listaUrlImagFiltrados = list(data_query.loc[0:,'imurl'].values)
+	listaPriceFiltrados = list(data_query.loc[0:,'price'].values)
+	objGaleriaList = listaIDFiltrados
 	return render(request, 'tienda_app/galeria.html',{'objGaleriaList':objGaleriaList})
+
 
 def RecomendacionKnn(asinconsultar):
 	try:

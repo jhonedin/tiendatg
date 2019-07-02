@@ -34,12 +34,19 @@
           </div>
           <h3>Registrate en JEB SHOP</h3>
           <p>Crea tu cuenta llenando los siguientes campos</p>
-          <form class="m-t" role="form" action="login.html">
+          <form class="m-t" method="POST">
+              {% csrf_token %}
+              <label> Nombre </label>
               <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Name" required="">
+                  {{ form.reviewername }}
               </div>
+              <label> Contraseña </label>
               <div class="form-group">
-                  <input type="password" class="form-control" placeholder="Password" required="">
+                  {{ form.reviewerid }}
+              </div>
+              <label> asin </label>
+              <div class="form-group">
+                  {{ form.asin }}
               </div>
               <button type="submit" class="btn btn-primary block full-width m-b">Registrar</button>
 

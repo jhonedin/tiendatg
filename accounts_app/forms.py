@@ -14,3 +14,16 @@ class LoginForm(forms.ModelForm):
         'reviewername': forms.TextInput(attrs={'class': 'form-control'}),
         'reviewerid': forms.TextInput(attrs={'class': 'form-control'}),
     }
+
+class RegistroForm(forms.ModelForm):
+    class Meta:
+        model = ReviewsAmazonDataset
+        fields = ['reviewername','reviewerid','asin']
+
+    labels = {'reviewername': 'Nombre','reviewerid': 'ID','asin':'Asin',}
+
+    widgets = {
+        'reviewername': forms.TextInput(attrs={'class': 'form-control'}),
+        'reviewerid': forms.TextInput(attrs={'class': 'form-control'}),
+        'asin': forms.TextInput(attrs={'class': 'form-control'}),
+    }

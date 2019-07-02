@@ -3,6 +3,25 @@
 {% block content %}
 <h2>GALERIA DE PRODUCTOS</h2>
 <br>
+
+<div id="productos" class="productos">
+
+            {% for objGaleriaList in objGaleriaList %}
+            {{ objGaleriaList }}
+            {% endfor %}
+
+</div>
+
+<script type="text/javascript">
+  var lista = document.getElementById("productos").innerHTML;
+
+  alert(lista);
+</script>
+
+{% for objGaleriaList in objGaleriaList %}
+
+{% endfor %}
+<!--
 {% for objGaleriaList in objGaleriaList %}
 
 <div class="row">
@@ -34,5 +53,6 @@
 
 
 {% endfor %}
+-->
 <br>
 {% endblock %}
