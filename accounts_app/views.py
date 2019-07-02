@@ -26,5 +26,12 @@ def login(request):
 	return render(request, 'accounts_app/login.html',{'form':form})
 
 def registro(request):
-	
-	return render(request, 'accounts_app/registro.html',{})
+	if request.method == 'POST':
+		form = RegistroForm(request.POST)
+		if form.is_valid():
+			nuevoRegistro = form.save()
+			form = LoginForm(request.POST)
+			return render(request, 'accounts_app/login.html',{'form':form})
+	else:
+		form = RegistroForm(request.POST)
+	return render(request, 'accounts_app/registro.html',{'form':form})

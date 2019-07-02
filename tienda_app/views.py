@@ -46,8 +46,12 @@ def vistaRecomendacionKnn(request):
 	 # Del review se extrae el usuario, y el asin (id producto) asociado a ese review de compra
 	 # con respecto al cual se realizara la recomendacion
 	asinconsultar = user.asin.asin
-	print("asin consultar")
-	print(asinconsultar)
+	print("objeto asin consultar")
+	print("ID:"+" "+user.asin.asin)
+	print("Precio:"+" "+user.asin.price)
+	print("Descripcion:"+" "+user.asin.description)
+	print("Marca:"+" "+user.asin.brand)
+	print("Categorias:"+" "+user.asin.categories)
 	rec = RecomendacionKnn(asinconsultar) # rec contiene rec=[[lista_id_productos],[lista_distanciasknn_productos]]
 	asinlist = rec[0] # extrae los id de los productos recomendados
 	distanceslist = rec[1] # extrae las distancias knn de los productos recomendados
@@ -101,8 +105,12 @@ def vistaRecomendacionKnn(request):
 def vistaRecomendacionSvd(request):
 	user = getUserConsultaGlobal()
 	asinconsultar = user.asin.asin
-	print("asin consultar")
-	print(asinconsultar)
+	print("objeto asin consultar")
+	print("ID:"+" "+user.asin.asin)
+	print("Precio:"+" "+user.asin.price)
+	print("Descripcion:"+" "+user.asin.description)
+	print("Marca:"+" "+user.asin.brand)
+	print("Categorias:"+" "+user.asin.categories)
 	asinlist= []
 	rec_svd = recomendacionColaborativaSVD(asinconsultar)
 	for i in range(0,len(rec_svd)):
