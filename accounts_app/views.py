@@ -27,11 +27,12 @@ def login(request):
 
 def registro(request):
 	if request.method == 'POST':
-		form = RegistroForm(request.POST)
-		if form.is_valid():
-			nuevoRegistro = form.save()
-			form = LoginForm(request.POST)
-			return render(request, 'accounts_app/login.html',{'form':form})
+		nombreNuevoReg = request.POST['reviewername']
+		idNuevoReg = request.POST['reviewerid']
+		print("nombre nuevo reg: "+nombreNuevoReg)
+		print("id nuevo reg: "+idNuevoReg)
+		form = LoginForm(request.POST)
+		return render(request, 'accounts_app/login.html',{'form':form})
 	else:
 		form = RegistroForm(request.POST)
 	return render(request, 'accounts_app/registro.html',{'form':form})
