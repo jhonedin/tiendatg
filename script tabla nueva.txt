@@ -1,0 +1,6 @@
+CREATE TABLE usuarios_nuevos (
+	usuarioid SERIAL,
+	reviewerid CHARACTER VARYING (50),
+	reviewername CHARACTER VARYING (500),
+	PRIMARY KEY (usuarioid)
+);
