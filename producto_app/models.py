@@ -138,7 +138,7 @@ class MetadataAmazonDataset(models.Model):
         return str (self.title)
 
     def __str__(self):
-        return str (self.price)             
+        return str (self.price)
 
     def __str__(self):
         return str (self.imurl)
@@ -150,7 +150,7 @@ class MetadataAmazonDataset(models.Model):
         return str (self.description)
 
     def __str__(self):
-        return str (self.categories) 
+        return str (self.categories)
 
 
 class ReviewsAmazonDataset(models.Model):
@@ -175,3 +175,21 @@ class ReviewsAmazonDataset(models.Model):
 
     def __str__(self):
         return str (self.overall)
+
+class UsuariosNuevos(models.Model):
+    usuarioid = models.AutoField(primary_key=True)
+    reviewerid = models.CharField(max_length=50, blank=True, null=True)
+    reviewername = models.CharField(max_length=500, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'usuarios_nuevos'
+
+    def __str__(self):
+        return str (self.usuarioid)
+
+    def __str__(self):
+        return str (self.reviewerid)
+
+    def __str__(self):
+        return str (self.reviewername)
