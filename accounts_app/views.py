@@ -20,10 +20,28 @@ def getUserConsultaGlobalNewUser():
 
 def login(request):
 	if request.method == 'POST':
+		consulta1 = ReviewsAmazonDataset.objects.filter(reviewerid = request.POST['reviewerid'],reviewername = request.POST['reviewername'])
+		consulta2 = UsuariosNuevos.objects.filter(reviewerid = request.POST['reviewerid'],reviewername = request.POST['reviewername'])
+		print("Consulta1: "+str(len(consulta1)))
+		print("Consulta2: "+str(len(consulta2)))
+		if len(consulta1) > len(consulta2):
+			print("hay mas elementos de consulta1 que de consulta2")
+			if consulta1 is not None:
+				user1 = consulta1[0]
+				global userConsultaGlobal
+				userConsultaGlobal = consulta1[0]
+				user = user1
+				return render(request, 'tienda_app/home.html',{'user':user})		
+		else:
+			if len(consulta1) == len(consulta2):
+				print("la longitud de las consultas son iguales")
+
+			else:
+				print("hay mas elementos de consulta2 que de consulta1")
 		form = LoginForm(request.POST)
 		return render(request, 'accounts_app/login.html',{'form':form})
 	else:
-		form = LoginForm(request.POST)
+		form = LoginForm(request.POS)
 	return render(request, 'accounts_app/login.html',{'form':form})
 
 """
