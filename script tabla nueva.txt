@@ -1,6 +1,10 @@
 CREATE TABLE usuarios_nuevos (
-	usuarioid SERIAL,
-	reviewerid CHARACTER VARYING (50),
-	reviewername CHARACTER VARYING (500),
+	usuarioid SERIAL NOT NULL,
+	reviewerid CHARACTER VARYING(50) NOT NULL,
+	reviewername CHARACTER VARYING (500) NOT NULL,
+	asin CHARACTER VARYING (50),
+	overall CHARACTER VARYING (20),
 	PRIMARY KEY (usuarioid)
 );
+
+insert into metadata_amazon_dataset(asin,title,price,imurl,brand,description,categories) values ('sinAsin','Sin Titulo','0.00','','Sin marca','','');

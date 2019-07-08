@@ -17,7 +17,7 @@ def getUserConsultaGlobal():
 def getUserConsultaGlobalNewUser():
 	newUserConsultado = getUserConsultaGlobalNewUser
 	return newUserConsultado
-
+"""
 def login(request):
 	if request.method == 'POST':
 		consulta1 = ReviewsAmazonDataset.objects.filter(reviewerid = request.POST['reviewerid'],reviewername = request.POST['reviewername'])
@@ -31,62 +31,64 @@ def login(request):
 				global userConsultaGlobal
 				userConsultaGlobal = consulta1[0]
 				user = user1
-				return render(request, 'tienda_app/home.html',{'user':user})		
+				return render(request, 'tienda_app/home.html',{'user':user})
 		else:
 			if len(consulta1) == len(consulta2):
 				print("la longitud de las consultas son iguales")
 
 			else:
 				print("hay mas elementos de consulta2 que de consulta1")
+				user2 = consulta2[0]
+				global userConsultaGlobalNewUser
+				userConsultaGlobalNewUser = consulta2[0]
+				user = user2
+				return render(request, 'tienda_app/home.html',{'user':user})
 		form = LoginForm(request.POST)
 		return render(request, 'accounts_app/login.html',{'form':form})
 	else:
-		form = LoginForm(request.POS)
+		form = LoginForm(request.POST)
 	return render(request, 'accounts_app/login.html',{'form':form})
-
 """
+
+
 def login(request):
 	if request.method == 'POST':
 		#user = get_object_or_404(ReviewsAmazonDataset, reviewerid = request.POST['reviewerid'], reviewername = request.POST['reviewername'] )
 		consulta1 = ReviewsAmazonDataset.objects.filter(reviewerid = request.POST['reviewerid'],reviewername = request.POST['reviewername'])
-		consulta2 = UsuariosNuevos.objects.filter(reviewerid = request.POST['reviewerid'],reviewername = request.POST['reviewername'])
 		if consulta1 is not None:
 			user1 = consulta1[0]
 			global userConsultaGlobal
 			userConsultaGlobal = consulta1[0]
 			user = user1
 			return render(request, 'tienda_app/home.html',{'user':user})
-		if consulta2 is not None:
-			user2 = consulta2[0]
-			global userConsultaGlobalNewUser
-			userConsultaGlobalNewUser = consulta2[0]
-			user = user2
-			return render(request, 'tienda_app/home.html',{'user':user})
 	else:
 		form = LoginForm(request.POST)
-
 	return render(request, 'accounts_app/login.html',{'form':form})
-"""
+
 
 def registro(request):
 	if request.method == 'POST':
 		reviewerID = request.POST['reviewerid']
 		reviewerName = request.POST['reviewername']
+		asin = 'sinAsin' # cuando es un usuario nuevo no tiene asin aun calificado
+		overall = 'sinOverall' # un usuario nuevo aun no ha hecho la calificación de un nuevo producto
 		datos = []
 		datos.append(reviewerID)
+		datos.append(asin)
 		datos.append(reviewerName)
+		datos.append(overall)
 		try:
 			conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
 			print("Conexion a la base de datos exitosa desde registro \n")
 		except:
 			print ("I am unable to connect to the database desde registro")
 		cursor = conn.cursor()
-		cursor.execute("INSERT into usuarios_nuevos(reviewerID,reviewerName) VALUES (%s, %s)",datos)
+		cursor.execute("INSERT into reviews_amazon_dataset(reviewerID,asin,reviewerName,overall) VALUES (%s,%s,%s,%s)",datos)
 		conn.commit()
 		cursor.close()
 		print("Registro exitoso desde registro")
 		form = LoginForm(request.POST)
-		return render(request, 'accounts_app/login.html',{'form':form})
+		return redirect(request, 'accounts_app/login.html',{'form':form})
 	else:
 		form = RegistroForm(request.POST)
 	return render(request, 'accounts_app/registro.html',{'form':form})
