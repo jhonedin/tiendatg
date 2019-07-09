@@ -247,9 +247,22 @@ def galeriaProducto(request):
 	print("data_query primera pos")
 	print(data_query.loc[0:,'asin'].values)
 	listaIDFiltrados = list(data_query.loc[0:,'asin'].values)
+	listaTitleFiltrados = list(data_query.loc[0:,'title'].values)
 	listaUrlImagFiltrados = list(data_query.loc[0:,'imurl'].values)
 	listaPriceFiltrados = list(data_query.loc[0:,'price'].values)
-	objGaleriaList = listaIDFiltrados
+	listaDescriptionFiltrados = list(data_query.loc[0:,'description'].values)
+	listaBrandFiltrados = list(data_query.loc[0:,'brand'].values)
+	listaCategoriesFiltrados = list(data_query.loc[0:,'categories'].values)
+	objGaleriaList = []
+	for i in range(0,10):
+		auxList = [listaIDFiltrados[0],
+				  listaTitleFiltrados[0],
+				  listaUrlImagFiltrados[0],
+				  listaPriceFiltrados[0],
+				  listaDescriptionFiltrados[0],
+				  listaBrandFiltrados[0],
+				  listaCategoriesFiltrados[0]]
+		objGaleriaList.append(auxList)
 	return render(request, 'tienda_app/galeria.html',{'objGaleriaList':objGaleriaList})
 
 

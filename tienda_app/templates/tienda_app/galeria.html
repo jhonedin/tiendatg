@@ -3,27 +3,13 @@
 {% block content %}
 <h2>GALERIA DE PRODUCTOS</h2>
 <br>
-
-<div id="productos" class="productos">
-
-            {% for objGaleriaList in objGaleriaList %}
-            {{ objGaleriaList }}
-            {% endfor %}
-
-</div>
-
-<script type="text/javascript">
-  var lista = document.getElementById("productos").innerHTML;
-
-  alert(lista);
-</script>
-
-{% for objGaleriaList in objGaleriaList %}
-
+{% for obj in objGaleriaList %}
+  {{ obj }} 
 {% endfor %}
-<!--
-{% for objGaleriaList in objGaleriaList %}
+<br>
 
+
+{% for objGaleriaList in objGaleriaList %}
 <div class="row">
   <div class="col-md-7">
 
@@ -38,21 +24,19 @@
           <th> Categorias </th>
         </tr>
         <tr>
-          <td>  {{ objGaleriaList.asin }} </td>
-          <td>  {{ objGaleriaList.title }} </td>
-          <td>  <img src="{{ objGaleriaList.imurl }}" alt="" width="65" height="75" > </td>
-          <td>  {{ objGaleriaList.price }} </td>
-          <td>  {{ objGaleriaList.brand }} </td>
-          <td>  {{ objGaleriaList.description }} </td>
-          <td>  {{ objGaleriaList.categories }} </td>
+          <td>  {{ objGaleriaList.0}} </td> <!-- asin-->
+          <td>  {{ objGaleriaList.1 }} </td> <!-- title-->
+          <td>  <img src="{{ objGaleriaList.2 }}" alt="" width="65" height="75" > </td> <!-- imurl-->
+          <td>  {{ objGaleriaList.3 }} </td> <!-- price-->
+          <td>  {{ objGaleriaList.4 }} </td> <!-- brand-->
+          <td>  {{ objGaleriaList.5 }} </td> <!-- description -->
+          <td>  {{ objGaleriaList.6 }} </td> <!-- categories -->
         </tr>
       </table>
 
  </div>
 </div>
-
-
 {% endfor %}
--->
+
 <br>
 {% endblock %}
