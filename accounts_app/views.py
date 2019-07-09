@@ -88,7 +88,7 @@ def registro(request):
 		cursor.close()
 		print("Registro exitoso desde registro")
 		form = LoginForm(request.POST)
-		return redirect(request, 'accounts_app/login.html',{'form':form})
+		return render(request, 'accounts_app/login.html',{'form':form})
 	else:
 		form = RegistroForm(request.POST)
 	return render(request, 'accounts_app/registro.html',{'form':form})

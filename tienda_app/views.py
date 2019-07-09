@@ -43,122 +43,168 @@ def Home(request):
 # Función encargarda de renderizar la recomendación mediante el algoritmo KNN
 def vistaRecomendacionKnn(request):
 	user = getUserConsultaGlobal()
-	 # Del review se extrae el usuario, y el asin (id producto) asociado a ese review de compra
-	 # con respecto al cual se realizara la recomendacion
-	asinconsultar = user.asin.asin
-	print("objeto asin consultar")
-	print("ID:"+" "+user.asin.asin)
-	print("Precio:"+" "+user.asin.price)
-	print("Descripcion:"+" "+user.asin.description)
-	print("Marca:"+" "+user.asin.brand)
-	print("Categorias:"+" "+user.asin.categories)
-	rec = RecomendacionKnn(asinconsultar) # rec contiene rec=[[lista_id_productos],[lista_distanciasknn_productos]]
-	asinlist = rec[0] # extrae los id de los productos recomendados
-	distanceslist = rec[1] # extrae las distancias knn de los productos recomendados
-	# Se espera que en knn se recomiende maximo 10 productos, aunque la cantidad de productos que se recomienden
-	# dependera de ajustar el parametro n_neighbors, en la función RecomendacionKnn
-	ObjProducto1 = None
-	ObjProducto2 = None
-	ObjProducto3 = None
-	ObjProducto4 = None
-	ObjProducto5 = None
-	ObjProducto6 = None
-	ObjProducto7 = None
-	ObjProducto8 = None
-	ObjProducto9 = None
-	ObjProducto10 = None
-	for i in range(0,len(asinlist)):
-		if(i==0):
-			ObjProducto1 = buscarProductoxAsin(asinlist[i])
-		if(i==1):
-			ObjProducto2 = buscarProductoxAsin(asinlist[i])
-		if(i==2):
-			ObjProducto3 = buscarProductoxAsin(asinlist[i])
-		if(i==3):
-			ObjProducto4 = buscarProductoxAsin(asinlist[i])
-		if(i==4):
-			ObjProducto5 = buscarProductoxAsin(asinlist[i])
-		if(i==5):
-			ObjProducto6 = buscarProductoxAsin(asinlist[i])
-		if(i==6):
-			ObjProducto7 = buscarProductoxAsin(asinlist[i])
-		if(i==7):
-			ObjProducto8 = buscarProductoxAsin(asinlist[i])
-		if(i==8):
-			ObjProducto9 = buscarProductoxAsin(asinlist[i])
-		if(i==9):
-			ObjProducto10 = buscarProductoxAsin(asinlist[i])
-
-	return render(request, 'tienda_app/knn.html',{'user':user,
-	'ObjProducto1':ObjProducto1,
-	'ObjProducto2':ObjProducto2,
-	'ObjProducto3':ObjProducto3,
-	'ObjProducto4':ObjProducto4,
-	'ObjProducto5':ObjProducto5,
-	'ObjProducto6':ObjProducto6,
-	'ObjProducto7':ObjProducto7,
-	'ObjProducto8':ObjProducto8,
-	'ObjProducto9':ObjProducto9,
-	'ObjProducto10':ObjProducto10})
+	if user.asin.asin == 'sinAsin':
+		print("No hay recomendaciones que mostrar")
+		ObjProducto1 = None
+		ObjProducto2 = None
+		ObjProducto3 = None
+		ObjProducto4 = None
+		ObjProducto5 = None
+		ObjProducto6 = None
+		ObjProducto7 = None
+		ObjProducto8 = None
+		ObjProducto9 = None
+		ObjProducto10 = None
+		return render(request, 'tienda_app/knn.html',{'user':user,
+		'ObjProducto1':ObjProducto1,
+		'ObjProducto2':ObjProducto2,
+		'ObjProducto3':ObjProducto3,
+		'ObjProducto4':ObjProducto4,
+		'ObjProducto5':ObjProducto5,
+		'ObjProducto6':ObjProducto6,
+		'ObjProducto7':ObjProducto7,
+		'ObjProducto8':ObjProducto8,
+		'ObjProducto9':ObjProducto9,
+		'ObjProducto10':ObjProducto10})
+	else:
+		# Del review se extrae el usuario, y el asin (id producto) asociado a ese review de compra
+	 	# con respecto al cual se realizara la recomendacion
+		asinconsultar = user.asin.asin
+		print("objeto asin consultar")
+		print("ID:"+" "+user.asin.asin)
+		print("Precio:"+" "+user.asin.price)
+		print("Descripcion:"+" "+user.asin.description)
+		print("Marca:"+" "+user.asin.brand)
+		print("Categorias:"+" "+user.asin.categories)
+		rec = RecomendacionKnn(asinconsultar) # rec contiene rec=[[lista_id_productos],[lista_distanciasknn_productos]]
+		asinlist = rec[0] # extrae los id de los productos recomendados
+		distanceslist = rec[1] # extrae las distancias knn de los productos recomendados
+		# Se espera que en knn se recomiende maximo 10 productos, aunque la cantidad de productos que se recomienden
+		# dependera de ajustar el parametro n_neighbors, en la función RecomendacionKnn
+		ObjProducto1 = None
+		ObjProducto2 = None
+		ObjProducto3 = None
+		ObjProducto4 = None
+		ObjProducto5 = None
+		ObjProducto6 = None
+		ObjProducto7 = None
+		ObjProducto8 = None
+		ObjProducto9 = None
+		ObjProducto10 = None
+		for i in range(0,len(asinlist)):
+			if(i==0):
+				ObjProducto1 = buscarProductoxAsin(asinlist[i])
+			if(i==1):
+				ObjProducto2 = buscarProductoxAsin(asinlist[i])
+			if(i==2):
+				ObjProducto3 = buscarProductoxAsin(asinlist[i])
+			if(i==3):
+				ObjProducto4 = buscarProductoxAsin(asinlist[i])
+			if(i==4):
+				ObjProducto5 = buscarProductoxAsin(asinlist[i])
+			if(i==5):
+				ObjProducto6 = buscarProductoxAsin(asinlist[i])
+			if(i==6):
+				ObjProducto7 = buscarProductoxAsin(asinlist[i])
+			if(i==7):
+				ObjProducto8 = buscarProductoxAsin(asinlist[i])
+			if(i==8):
+				ObjProducto9 = buscarProductoxAsin(asinlist[i])
+			if(i==9):
+				ObjProducto10 = buscarProductoxAsin(asinlist[i])
+		return render(request, 'tienda_app/knn.html',{'user':user,
+		'ObjProducto1':ObjProducto1,
+		'ObjProducto2':ObjProducto2,
+		'ObjProducto3':ObjProducto3,
+		'ObjProducto4':ObjProducto4,
+		'ObjProducto5':ObjProducto5,
+		'ObjProducto6':ObjProducto6,
+		'ObjProducto7':ObjProducto7,
+		'ObjProducto8':ObjProducto8,
+		'ObjProducto9':ObjProducto9,
+		'ObjProducto10':ObjProducto10})
 
 # Función encargarda de renderizar la recomendación mediante el algoritmo SVM
 def vistaRecomendacionSvd(request):
 	user = getUserConsultaGlobal()
-	asinconsultar = user.asin.asin
-	print("objeto asin consultar")
-	print("ID:"+" "+user.asin.asin)
-	print("Precio:"+" "+user.asin.price)
-	print("Descripcion:"+" "+user.asin.description)
-	print("Marca:"+" "+user.asin.brand)
-	print("Categorias:"+" "+user.asin.categories)
-	asinlist= []
-	rec_svd = recomendacionColaborativaSVD(asinconsultar)
-	for i in range(0,len(rec_svd)):
-		tupla = rec_svd[i]
-		asinlist.append(tupla[0])
-
-	ObjProducto1 = None
-	ObjProducto2 = None
-	ObjProducto3 = None
-	ObjProducto4 = None
-	ObjProducto5 = None
-	ObjProducto6 = None
-	ObjProducto7 = None
-	ObjProducto8 = None
-	ObjProducto9 = None
-	ObjProducto10 = None
-	for i in range(0,len(asinlist)):
-		if(i==0):
-			ObjProducto1 = buscarProductoxAsin(asinlist[i])
-		if(i==1):
-			ObjProducto2 = buscarProductoxAsin(asinlist[i])
-		if(i==2):
-			ObjProducto3 = buscarProductoxAsin(asinlist[i])
-		if(i==3):
-			ObjProducto4 = buscarProductoxAsin(asinlist[i])
-		if(i==4):
-			ObjProducto5 = buscarProductoxAsin(asinlist[i])
-		if(i==5):
-			ObjProducto6 = buscarProductoxAsin(asinlist[i])
-		if(i==6):
-			ObjProducto7 = buscarProductoxAsin(asinlist[i])
-		if(i==7):
-			ObjProducto8 = buscarProductoxAsin(asinlist[i])
-		if(i==8):
-			ObjProducto9 = buscarProductoxAsin(asinlist[i])
-		if(i==9):
-			ObjProducto10 = buscarProductoxAsin(asinlist[i])
-	return render(request, 'tienda_app/svd.html',{'user':user,
-	'ObjProducto1':ObjProducto1,
-	'ObjProducto2':ObjProducto2,
-	'ObjProducto3':ObjProducto3,
-	'ObjProducto4':ObjProducto4,
-	'ObjProducto5':ObjProducto5,
-	'ObjProducto6':ObjProducto6,
-	'ObjProducto7':ObjProducto7,
-	'ObjProducto8':ObjProducto8,
-	'ObjProducto9':ObjProducto9,
-	'ObjProducto10':ObjProducto10})
+	if user.asin.asin == 'sinAsin':
+		print("No hay recomendaciones que mostrar")
+		ObjProducto1 = None
+		ObjProducto2 = None
+		ObjProducto3 = None
+		ObjProducto4 = None
+		ObjProducto5 = None
+		ObjProducto6 = None
+		ObjProducto7 = None
+		ObjProducto8 = None
+		ObjProducto9 = None
+		ObjProducto10 = None
+		return render(request, 'tienda_app/svd.html',{'user':user,
+		'ObjProducto1':ObjProducto1,
+		'ObjProducto2':ObjProducto2,
+		'ObjProducto3':ObjProducto3,
+		'ObjProducto4':ObjProducto4,
+		'ObjProducto5':ObjProducto5,
+		'ObjProducto6':ObjProducto6,
+		'ObjProducto7':ObjProducto7,
+		'ObjProducto8':ObjProducto8,
+		'ObjProducto9':ObjProducto9,
+		'ObjProducto10':ObjProducto10})
+	else:
+		asinconsultar = user.asin.asin
+		print("objeto asin consultar")
+		print("ID:"+" "+user.asin.asin)
+		print("Precio:"+" "+user.asin.price)
+		print("Descripcion:"+" "+user.asin.description)
+		print("Marca:"+" "+user.asin.brand)
+		print("Categorias:"+" "+user.asin.categories)
+		asinlist= []
+		rec_svd = recomendacionColaborativaSVD(asinconsultar)
+		for i in range(0,len(rec_svd)):
+			tupla = rec_svd[i]
+			asinlist.append(tupla[0])
+		ObjProducto1 = None
+		ObjProducto2 = None
+		ObjProducto3 = None
+		ObjProducto4 = None
+		ObjProducto5 = None
+		ObjProducto6 = None
+		ObjProducto7 = None
+		ObjProducto8 = None
+		ObjProducto9 = None
+		ObjProducto10 = None
+		for i in range(0,len(asinlist)):
+			if(i==0):
+				ObjProducto1 = buscarProductoxAsin(asinlist[i])
+			if(i==1):
+				ObjProducto2 = buscarProductoxAsin(asinlist[i])
+			if(i==2):
+				ObjProducto3 = buscarProductoxAsin(asinlist[i])
+			if(i==3):
+				ObjProducto4 = buscarProductoxAsin(asinlist[i])
+			if(i==4):
+				ObjProducto5 = buscarProductoxAsin(asinlist[i])
+			if(i==5):
+				ObjProducto6 = buscarProductoxAsin(asinlist[i])
+			if(i==6):
+				ObjProducto7 = buscarProductoxAsin(asinlist[i])
+			if(i==7):
+				ObjProducto8 = buscarProductoxAsin(asinlist[i])
+			if(i==8):
+				ObjProducto9 = buscarProductoxAsin(asinlist[i])
+			if(i==9):
+				ObjProducto10 = buscarProductoxAsin(asinlist[i])
+		return render(request, 'tienda_app/svd.html',{'user':user,
+		'ObjProducto1':ObjProducto1,
+		'ObjProducto2':ObjProducto2,
+		'ObjProducto3':ObjProducto3,
+		'ObjProducto4':ObjProducto4,
+		'ObjProducto5':ObjProducto5,
+		'ObjProducto6':ObjProducto6,
+		'ObjProducto7':ObjProducto7,
+		'ObjProducto8':ObjProducto8,
+		'ObjProducto9':ObjProducto9,
+		'ObjProducto10':ObjProducto10})
 
 
 def metricas(request):
