@@ -3,40 +3,51 @@
 {% block content %}
 <h2>GALERIA DE PRODUCTOS</h2>
 <br>
-{% for obj in objGaleriaList %}
-  {{ obj }} 
-{% endfor %}
-<br>
-
-
 {% for objGaleriaList in objGaleriaList %}
 <div class="row">
-  <div class="col-md-7">
+  <div class="col-md-10">
 
-      <table class="footable table table-stripped toggle-arrow-tiny" data-page-size="15">
+      <table class="footable table table-stripped toggle-arrow-tiny full-width" data-page-size="20">
         <tr>
           <th> Codigo </th>
           <th> Titulo </th>
           <th> Imagen </th>
           <th> Precio </th>
-          <th> Marca </th>
           <th> Descripción </th>
+          <th> Marca </th>
           <th> Categorias </th>
         </tr>
         <tr>
           <td>  {{ objGaleriaList.0}} </td> <!-- asin-->
           <td>  {{ objGaleriaList.1 }} </td> <!-- title-->
-          <td>  <img src="{{ objGaleriaList.2 }}" alt="" width="65" height="75" > </td> <!-- imurl-->
+          <td>  <img src="{{ objGaleriaList.2 }}" alt="" width="85" height="95" > </td> <!-- imurl-->
           <td>  {{ objGaleriaList.3 }} </td> <!-- price-->
-          <td>  {{ objGaleriaList.4 }} </td> <!-- brand-->
-          <td>  {{ objGaleriaList.5 }} </td> <!-- description -->
+          <td>  {{ objGaleriaList.4 }} </td> <!-- description -->
+          <td>  {{ objGaleriaList.5 }} </td> <!-- brand-->
           <td>  {{ objGaleriaList.6 }} </td> <!-- categories -->
         </tr>
+        <tr>
+          <table>
+            <tr>
+                <h3>Calificar</h3>
+            </tr>
+            <tr>
+              <td>
+                <form class="" action="{% url 'calificarBtnUno' %}" method="get"> 
+                  <button type="submit" class="btn btn-primary">1</button>
+                </form>
+              </td>
+              <td> <button type="submit" class="btn btn-primary">2</button> </td>
+              <td> <button type="submit" class="btn btn-primary">3</button> </td>
+              <td> <button type="submit" class="btn btn-primary">4</button> </td>
+              <td> <button type="submit" class="btn btn-primary">5</button> </td>
+            </tr>
+          </table>
+        </tr>
       </table>
-
+      <br>
  </div>
 </div>
 {% endfor %}
-
 <br>
 {% endblock %}

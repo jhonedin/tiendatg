@@ -22,6 +22,7 @@ from tienda_app.views import galeriaProducto
 from tienda_app.views import Home
 from tienda_app.views import vistaRecomendacionKnn
 from tienda_app.views import vistaRecomendacionSvd
+from tienda_app.views import calificarBtnUno
 from accounts_app.views import login
 from accounts_app.views import registro
 
@@ -32,6 +33,7 @@ urlpatterns = [
     path('accounts_app/', include('accounts_app.urls')),
     path('login/',login, name='login'),
     path('registro/',registro, name='registro'),
+    path('calificarBtnUno/',calificarBtnUno, name='calificarBtnUno'),
     path('Home/',Home, name='Home'),
     path('metricas/',metricas, name='metricas'),
     path('galeriaProducto/',galeriaProducto, name='galeriaProducto'),
