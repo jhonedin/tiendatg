@@ -365,6 +365,6 @@ def recomendacionColaborativaSVD(asinconsultar):
 	return rec_svd
 
 def calificarBtnUno(request):
-	asinProducto = request.POST['objGaleriaList']
-	print("Logre calificar el produdcto"+asinProducto)
+	
+	print("Logre calificar el produdcto")
 	return render(request, 'tienda_app/galeria.html',{})
