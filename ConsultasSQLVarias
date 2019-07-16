@@ -1,0 +1,5 @@
+select * from reviews_amazon_dataset where reviewerid='A17DDEVH3YM3NL'
+
+select * from reviews_amazon_dataset where reviewerid='A17DDEVH3YM3NL' AND asin='0000031887'
+
+update reviews_amazon_dataset set overall='1.0' where reviewerid='A17DDEVH3YM3NL' AND asin='0000031887';

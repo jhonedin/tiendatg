@@ -24,6 +24,8 @@ asinlistGlobalSVD = []
 distanceslistGlobalSVD = []
 finalTimeGlobalSVD = 0
 
+objGaleriaListGlobal = []
+
 def Home(request):
 	user = getUserConsultaGlobal()
 	asinlist = asinlistGlobal
@@ -235,6 +237,7 @@ def buscarProductoxAsin(asin):
 
 # Función encargada de renderizar la galeria de productos
 def galeriaProducto(request):
+	user = getUserConsultaGlobal()
 	try:
 		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
 		print("Conexion a la base de datos exitosa \n")
@@ -261,7 +264,9 @@ def galeriaProducto(request):
 				  listaBrandFiltrados[i],
 				  listaCategoriesFiltrados[i]]
 		objGaleriaList.append(auxList)
-	return render(request, 'tienda_app/galeria.html',{'objGaleriaList':objGaleriaList})
+	global objGaleriaListGlobal
+	objGaleriaListGlobal = objGaleriaList
+	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
 
 
 def RecomendacionKnn(asinconsultar):
@@ -277,7 +282,7 @@ def RecomendacionKnn(asinconsultar):
 	print("\n")
 	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
 	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
-	ratings_minimo = 100
+	ratings_minimo = 5
 	productos_mas_populares = totales_ratings.query('cuentaTotalRatings >= @ratings_minimo')
 	ratings_pivot = productos_mas_populares.pivot(index = 'asin', columns = 'reviewerid', values = 'overall').fillna(0)
 	ratings_matrix_sparse = csr_matrix(ratings_pivot.values.astype(float))
@@ -364,7 +369,146 @@ def recomendacionColaborativaSVD(asinconsultar):
 	print ('El script tomó {0} segundos'.format(finalTime))
 	return rec_svd
 
-def calificarBtnUno(request):
-	
-	print("Logre calificar el produdcto")
-	return render(request, 'tienda_app/galeria.html',{})
+def calificarBtnUno(request,asin,nombreUser,idUser):
+	user = getUserConsultaGlobal()
+	print("------------")
+	print("Logre calificar el produdcto: "+asin)
+	print("Nombre Usuario: "+nombreUser)
+	print("ID Usuario: "+idUser)
+	print("------------")
+	dataVerificacion = validarCalificacion(asin,idUser)
+	print("dataVerificacion")
+	print(dataVerificacion)
+	if dataVerificacion.empty:
+		print("Ese producto no ha sido votado anteriormente")
+		calificacion = '1.0'
+		registrarCalificacion(idUser,asin,nombreUser,calificacion)
+	else:
+		print("Ya se voto ese producto anteriormente")
+		calificacion = '1.0'
+		actualizarCalificacion(idUser,asin,calificacion)
+	objGaleriaList = objGaleriaListGlobal
+	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
+
+def calificarBtnDos(request,asin,nombreUser,idUser):
+	user = getUserConsultaGlobal()
+	print("------------")
+	print("Logre calificar el produdcto: "+asin)
+	print("Nombre Usuario: "+nombreUser)
+	print("ID Usuario: "+idUser)
+	print("------------")
+	dataVerificacion = validarCalificacion(asin,idUser)
+	print("dataVerificacion")
+	print(dataVerificacion)
+	if dataVerificacion.empty:
+		print("Ese producto no ha sido votado anteriormente")
+		calificacion = '2.0'
+		registrarCalificacion(idUser,asin,nombreUser,calificacion)
+	else:
+		print("Ya se voto ese producto anteriormente")
+		calificacion = '2.0'
+		actualizarCalificacion(idUser,asin,calificacion)
+	objGaleriaList = objGaleriaListGlobal
+	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
+
+def calificarBtnTres(request,asin,nombreUser,idUser):
+	user = getUserConsultaGlobal()
+	print("------------")
+	print("Logre calificar el produdcto: "+asin)
+	print("Nombre Usuario: "+nombreUser)
+	print("ID Usuario: "+idUser)
+	print("------------")
+	dataVerificacion = validarCalificacion(asin,idUser)
+	print("dataVerificacion")
+	print(dataVerificacion)
+	if dataVerificacion.empty:
+		print("Ese producto no ha sido votado anteriormente")
+		calificacion = '3.0'
+		registrarCalificacion(idUser,asin,nombreUser,calificacion)
+	else:
+		print("Ya se voto ese producto anteriormente")
+		calificacion = '3.0'
+		actualizarCalificacion(idUser,asin,calificacion)
+	objGaleriaList = objGaleriaListGlobal
+	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
+
+
+def calificarBtnCuatro(request,asin,nombreUser,idUser):
+	user = getUserConsultaGlobal()
+	print("------------")
+	print("Logre calificar el produdcto: "+asin)
+	print("Nombre Usuario: "+nombreUser)
+	print("ID Usuario: "+idUser)
+	print("------------")
+	dataVerificacion = validarCalificacion(asin,idUser)
+	print("dataVerificacion")
+	print(dataVerificacion)
+	if dataVerificacion.empty:
+		print("Ese producto no ha sido votado anteriormente")
+		calificacion = '4.0'
+		registrarCalificacion(idUser,asin,nombreUser,calificacion)
+	else:
+		print("Ya se voto ese producto anteriormente")
+		calificacion = '4.0'
+		actualizarCalificacion(idUser,asin,calificacion)
+	objGaleriaList = objGaleriaListGlobal
+	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
+
+def calificarBtnCinco(request,asin,nombreUser,idUser):
+	user = getUserConsultaGlobal()
+	print("------------")
+	print("Logre calificar el produdcto: "+asin)
+	print("Nombre Usuario: "+nombreUser)
+	print("ID Usuario: "+idUser)
+	print("------------")
+	dataVerificacion = validarCalificacion(asin,idUser)
+	print("dataVerificacion")
+	print(dataVerificacion)
+	if dataVerificacion.empty:
+		print("Ese producto no ha sido votado anteriormente")
+		calificacion = '5.0'
+		registrarCalificacion(idUser,asin,nombreUser,calificacion)
+	else:
+		print("Ya se voto ese producto anteriormente")
+		calificacion = '5.0'
+		actualizarCalificacion(idUser,asin,calificacion)
+	objGaleriaList = objGaleriaListGlobal
+	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
+
+def validarCalificacion(asin,idUser):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa \n")
+	except:
+		print ("I am unable to connect to the database")
+	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewerid='"""+idUser+"""'"""+""" AND """+""" asin='"""+asin+"""'"""
+	data_query = pd.read_sql(query, conn)
+	return data_query
+
+def registrarCalificacion(reviewerID,asin,reviewerName,overall):
+	datos = []
+	datos.append(reviewerID)
+	datos.append(asin)
+	datos.append(reviewerName)
+	datos.append(overall)
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa desde registrar calificacion \n")
+	except:
+		print ("I am unable to connect to the database desde registro")
+	cursor = conn.cursor()
+	cursor.execute("INSERT into reviews_amazon_dataset(reviewerID,asin,reviewerName,overall) VALUES (%s,%s,%s,%s)",datos)
+	conn.commit()
+	cursor.close()
+
+def actualizarCalificacion(reviewerID,asin,overall):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa desde actualizar calificacion \n")
+	except:
+		print ("I am unable to connect to the database desde registro")
+	cursor = conn.cursor()
+	sql = """UPDATE reviews_amazon_dataset SET overall= %s WHERE reviewerid= %s AND asin= %s"""
+	cursor.execute(sql,(overall,reviewerID,asin))
+	conn.commit()
+	cursor.close()

@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<h3>USTED SE HA IDENTIFICADO COMO</h3>
+<p>Nombre: {{ user.reviewername}}  /  ID: {{ user.reviewerid }} </p>
+<br>
 <h2>GALERIA DE PRODUCTOS</h2>
 <br>
 {% for objGaleriaList in objGaleriaList %}
@@ -32,21 +35,11 @@
                 <h3>Calificar</h3>
             </tr>
             <tr>
-              <a href="{% url 'calificarBtnUno' %}" class="btn btn-xs btn-outline btn-primary">1 <i class="fa fa-long-arrow-right"></i> </a>
-                <!--
-               <td>
-
-                <form class="" action="{% url 'calificarBtnUno' %}" method="GET">
-                  <button type="submit" class="btn btn-primary">1</button>
-                </form>
-              </td>
-              <a href="{% url 'calificarBtnUno' %}" class="btn btn-xs btn-outline btn-primary">1 <i class="fa fa-long-arrow-right"></i> </a>
-              <!--
-              <td> <button type="submit" class="btn btn-primary">2</button> </td>
-              <td> <button type="submit" class="btn btn-primary">3</button> </td>
-              <td> <button type="submit" class="btn btn-primary">4</button> </td>
-              <td> <button type="submit" class="btn btn-primary">5</button> </td>
-              -->
+              <td><a href="{% url 'calificarBtnUno' asin=objGaleriaList.0 nombreUser=user.reviewername idUser=user.reviewerid %}"><button class="btn btn-primary">1</button></a></td>
+              <td><a href="{% url 'calificarBtnDos' asin=objGaleriaList.0 nombreUser=user.reviewername idUser=user.reviewerid %}"><button class="btn btn-primary">2</button></a></td>
+              <td><a href="{% url 'calificarBtnTres' asin=objGaleriaList.0 nombreUser=user.reviewername idUser=user.reviewerid %}"><button class="btn btn-primary">3</button></a></td>
+              <td><a href="{% url 'calificarBtnCuatro' asin=objGaleriaList.0 nombreUser=user.reviewername idUser=user.reviewerid %}"><button class="btn btn-primary">4</button></a></td>
+              <td><a href="{% url 'calificarBtnCinco' asin=objGaleriaList.0 nombreUser=user.reviewername idUser=user.reviewerid %}"><button class="btn btn-primary">5</button></a></td>
             </tr>
           </table>
         </tr>
@@ -56,4 +49,5 @@
 </div>
 {% endfor %}
 <br>
+
 {% endblock %}

@@ -23,6 +23,10 @@ from tienda_app.views import Home
 from tienda_app.views import vistaRecomendacionKnn
 from tienda_app.views import vistaRecomendacionSvd
 from tienda_app.views import calificarBtnUno
+from tienda_app.views import calificarBtnDos
+from tienda_app.views import calificarBtnTres
+from tienda_app.views import calificarBtnCuatro
+from tienda_app.views import calificarBtnCinco
 from accounts_app.views import login
 from accounts_app.views import registro
 
@@ -33,7 +37,11 @@ urlpatterns = [
     path('accounts_app/', include('accounts_app.urls')),
     path('login/',login, name='login'),
     path('registro/',registro, name='registro'),
-    path('calificarBtnUno/',calificarBtnUno, name='calificarBtnUno'),
+    path('calificarBtnUno/(?P<asin>[-\w]+)(?P<nombreUser>[-\w]+)(?P<idUser>[-\w]+)',calificarBtnUno, name='calificarBtnUno'),
+    path('calificarBtnDos/(?P<asin>[-\w]+)(?P<nombreUser>[-\w]+)(?P<idUser>[-\w]+)',calificarBtnDos, name='calificarBtnDos'),
+    path('calificarBtnTres/(?P<asin>[-\w]+)(?P<nombreUser>[-\w]+)(?P<idUser>[-\w]+)',calificarBtnTres, name='calificarBtnTres'),
+    path('calificarBtnCuatro/(?P<asin>[-\w]+)(?P<nombreUser>[-\w]+)(?P<idUser>[-\w]+)',calificarBtnCuatro, name='calificarBtnCuatro'),
+    path('calificarBtnCinco/(?P<asin>[-\w]+)(?P<nombreUser>[-\w]+)(?P<idUser>[-\w]+)',calificarBtnCinco, name='calificarBtnCinco'),
     path('Home/',Home, name='Home'),
     path('metricas/',metricas, name='metricas'),
     path('galeriaProducto/',galeriaProducto, name='galeriaProducto'),
