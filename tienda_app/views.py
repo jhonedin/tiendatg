@@ -255,7 +255,7 @@ def galeriaProducto(request):
 	listaBrandFiltrados = list(data_query.loc[0:,'brand'].values)
 	listaCategoriesFiltrados = list(data_query.loc[0:,'categories'].values)
 	objGaleriaList = []
-	for i in range(0,10):
+	for i in range(0,200):
 		auxList = [listaIDFiltrados[i],
 				  listaTitleFiltrados[i],
 				  listaUrlImagFiltrados[i],
@@ -282,7 +282,7 @@ def RecomendacionKnn(asinconsultar):
 	print("\n")
 	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
 	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
-	ratings_minimo = 5
+	ratings_minimo = 100
 	productos_mas_populares = totales_ratings.query('cuentaTotalRatings >= @ratings_minimo')
 	ratings_pivot = productos_mas_populares.pivot(index = 'asin', columns = 'reviewerid', values = 'overall').fillna(0)
 	ratings_matrix_sparse = csr_matrix(ratings_pivot.values.astype(float))
