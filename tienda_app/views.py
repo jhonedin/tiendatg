@@ -42,10 +42,31 @@ def Home(request):
 	'ObjProducto4':ObjProducto4,
 	'ObjProducto5':ObjProducto5})
 
+def reviewsAsociadosUsuario(reviewername):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa desde reviewsAsociadosUsuario \n")
+	except:
+		print ("I am unable to connect to the database")
+	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewername='"""+reviewername+"""'"""
+	data_query = pd.read_sql(query, conn)
+	return data_query
+
 # Función encargarda de renderizar la recomendación mediante el algoritmo KNN
 def vistaRecomendacionKnn(request):
+	print("")
+	print("***************************")
+	print("Entro a Recomendacion KNN")
 	user = getUserConsultaGlobal()
-	if user.asin.asin == 'sinAsin':
+	reviewsAsociados = reviewsAsociadosUsuario(user.reviewername)
+	asinValido = 'sinAsin'
+	print("Review Asociado KNN")
+	for i in range(0,len(reviewsAsociados)):
+		if reviewsAsociados.asin.get(i) != 'sinAsin':
+			asinValido = reviewsAsociados.asin.get(i)
+			user = reviewsAsociados.get(i)
+	print("Asin valido seleccionado: "+asinValido)
+	if asinValido == 'sinAsin':
 		print("No hay recomendaciones que mostrar")
 		ObjProducto1 = None
 		ObjProducto2 = None
@@ -128,8 +149,19 @@ def vistaRecomendacionKnn(request):
 
 # Función encargarda de renderizar la recomendación mediante el algoritmo SVM
 def vistaRecomendacionSvd(request):
+	print("")
+	print("***************************")
+	print("Entro a Recomendacion SVD")
 	user = getUserConsultaGlobal()
-	if user.asin.asin == 'sinAsin':
+	reviewsAsociados = reviewsAsociadosUsuario(user.reviewername)
+	asinValido = 'sinAsin'
+	print("Review Asociado SVD")
+	for i in range(0,len(reviewsAsociados)):
+		if reviewsAsociados.asin.get(i) != 'sinAsin':
+			asinValido = reviewsAsociados.asin.get(i)
+			user = reviewsAsociados.get(i)
+	print("Asin valido seleccionado: "+asinValido)
+	if asinValido == 'sinAsin':
 		print("No hay recomendaciones que mostrar")
 		ObjProducto1 = None
 		ObjProducto2 = None
@@ -235,6 +267,18 @@ def buscarProductoxAsin(asin):
 	objProducto = MetadataAmazonDataset.objects.filter(asin=str(asin))
 	return objProducto
 
+def productoSql(asin):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		#print("Conexion a la base de datos exitosa desde productosql \n")
+	except:
+		print ("I am unable to connect to the database")
+	query = """ SELECT * FROM metadata_amazon_dataset WHERE asin='"""+asin+"""'"""
+	data_query = pd.read_sql(query, conn)
+	conn.commit()
+	return data_query
+
+
 # Función encargada de renderizar la galeria de productos
 def galeriaProducto(request):
 	user = getUserConsultaGlobal()
@@ -243,27 +287,28 @@ def galeriaProducto(request):
 		print("Conexion a la base de datos exitosa \n")
 	except:
 		print ("I am unable to connect to the database")
-	query = """SELECT * FROM metadata_amazon_dataset m  WHERE m.price !='0.00' AND m.description !='Sin descripcion' AND m.description !='' AND m.brand != 'Sin marca' """
-	data_query = pd.read_sql(query, conn)
-	print("data_query")
-	print(data_query)
-	listaIDFiltrados = list(data_query.loc[0:,'asin'].values)
-	listaTitleFiltrados = list(data_query.loc[0:,'title'].values)
-	listaUrlImagFiltrados = list(data_query.loc[0:,'imurl'].values)
-	listaPriceFiltrados = list(data_query.loc[0:,'price'].values)
-	listaDescriptionFiltrados = list(data_query.loc[0:,'description'].values)
-	listaBrandFiltrados = list(data_query.loc[0:,'brand'].values)
-	listaCategoriesFiltrados = list(data_query.loc[0:,'categories'].values)
+	query1 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' AND m.asin !='sinAsin' """
+	data_query = pd.read_sql(query1, conn)
+	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
+	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
+	ratings_minimo = 50
+	productos_mas_populares = totales_ratings.query('cuentaTotalRatings >= @ratings_minimo')
+	ratings_pivot = productos_mas_populares.pivot(index = 'asin', columns = 'reviewerid', values = 'overall').fillna(0)
+	print("ratings_pivot")
+	print(ratings_pivot.index)
+	indexListAsin = []
 	objGaleriaList = []
-	for i in range(0,200):
-		auxList = [listaIDFiltrados[i],
-				  listaTitleFiltrados[i],
-				  listaUrlImagFiltrados[i],
-				  listaPriceFiltrados[i],
-				  listaDescriptionFiltrados[i],
-				  listaBrandFiltrados[i],
-				  listaCategoriesFiltrados[i]]
-		objGaleriaList.append(auxList)
+	indexListAsin = ratings_pivot.index
+	for i in range(0,100):
+		objProducto = productoSql(indexListAsin[i])
+		producto = [str(objProducto.asin.get(0)),
+				str(objProducto.title.get(0)),
+				str(objProducto.imurl.get(0)),
+				str(objProducto.price.get(0)),
+				str(objProducto.description.get(0)),
+				str(objProducto.brand.get(0)),
+				str(objProducto.categories.get(0))]
+		objGaleriaList.append(producto)
 	global objGaleriaListGlobal
 	objGaleriaListGlobal = objGaleriaList
 	return render(request, 'tienda_app/galeria.html',{'user':user,'objGaleriaList':objGaleriaList})
@@ -275,14 +320,14 @@ def RecomendacionKnn(asinconsultar):
 		print("Conexion a la base de datos exitosa \n")
 	except:
 		print ("I am unable to connect to the database")
-	query1 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' """
+	query1 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' AND m.asin !='sinAsin' """
 	data_query = pd.read_sql(query1, conn)
 	startTime = time.time()
 	print("IMPLEMENTACION RECOMENDACION KNN")
 	print("\n")
 	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
 	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
-	ratings_minimo = 100
+	ratings_minimo = 50
 	productos_mas_populares = totales_ratings.query('cuentaTotalRatings >= @ratings_minimo')
 	ratings_pivot = productos_mas_populares.pivot(index = 'asin', columns = 'reviewerid', values = 'overall').fillna(0)
 	ratings_matrix_sparse = csr_matrix(ratings_pivot.values.astype(float))
@@ -323,14 +368,14 @@ def recomendacionColaborativaSVD(asinconsultar):
 	except:
 		print ("I am unable to connect to the database")
 
-	query2 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' """
+	query2 = """ SELECT r.reviewerid, m.asin, r.overall FROM metadata_amazon_dataset m JOIN reviews_amazon_dataset r ON m.asin = r.asin WHERE m.price !='0.00' AND r.overall !='1.0' AND r.overall !='2.0' AND m.description !='Sin descripcion' AND m.description !='''' AND m.brand != 'Sin marca' AND m.asin !='sinAsin' """
 	data_query = pd.read_sql(query2, conn)
 	startTime = time.time()
 	print("IMPLEMENTACION RECOMENDACION COLABORATIVA SVD")
 	print("\n")
 	cuenta_rating_producto = (data_query.groupby(by = ['asin'])['overall'].count().reset_index().rename(columns={'overall': 'cuentaTotalRatings'})[['asin','cuentaTotalRatings']])
 	totales_ratings = data_query.merge(cuenta_rating_producto, left_on = 'asin', right_on = 'asin', how = 'left')
-	ratings_minimo = 100
+	ratings_minimo = 50
 	productos_mas_populares = totales_ratings.query('cuentaTotalRatings >= @ratings_minimo')
 	ratings_pivot = productos_mas_populares.pivot(index = 'asin', columns = 'reviewerid', values = 'overall').fillna(0)
 	X = ratings_pivot.values
