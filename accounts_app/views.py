@@ -53,6 +53,16 @@ def registro(request):
 		reviewerName = request.POST['reviewername']
 		asin = 'sinAsin' # cuando es un usuario nuevo no tiene asin aun calificado
 		overall = 'sinOverall' # un usuario nuevo aun no ha hecho la calificación de un nuevo producto
+		dataNombre = validarNombre(reviewerName)
+		if dataNombre.reviewername.get(0)==reviewerName:
+			print("Nombre registrado anteriormente")
+			return render(request, 'accounts_app/error_registro.html',{})
+		#******************************************************
+		dataContrasena = validarContrasena(reviewerID)
+		if dataNombre.reviewerid.get(0)==reviewerID:
+			print("Contrasena registrada anteriormente")
+			return render(request, 'accounts_app/error_registro.html',{})
+		#******************************************************
 		dataVer = validarRegistro(reviewerName,reviewerID)
 		print("Nombre verificado")
 		print(type(dataVer.reviewername.get(0)))
@@ -61,7 +71,7 @@ def registro(request):
 		print(type(dataVer.reviewerid.get(0)))
 		print(dataVer.reviewerid.get(0))
 		if dataVer.reviewername.get(0)==reviewerName and dataVer.reviewerid.get(0)==reviewerID:
-			print("Se valido que esta registrado anteriormente")
+			print("Esta registrado anteriormente")
 			return render(request, 'accounts_app/error_registro.html',{})
 		else:
 			print("No estaba registrado anteriormente")
@@ -92,5 +102,25 @@ def validarRegistro(reviewername,reviewerid):
 	except:
 		print ("I am unable to connect to the database")
 	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewerid='"""+reviewerid+"""'"""+""" AND """+""" reviewername='"""+reviewername+"""'"""
+	data_query = pd.read_sql(query, conn)
+	return data_query
+
+def validarNombre(reviewername):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa desde validar nombre \n")
+	except:
+		print ("I am unable to connect to the database")
+	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewername='"""+reviewername+"""'"""
+	data_query = pd.read_sql(query, conn)
+	return data_query
+
+def validarContrasena(reviewerid):
+	try:
+		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
+		print("Conexion a la base de datos exitosa desde validar nombre \n")
+	except:
+		print ("I am unable to connect to the database")
+	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewerid='"""+reviewerid+"""'"""
 	data_query = pd.read_sql(query, conn)
 	return data_query

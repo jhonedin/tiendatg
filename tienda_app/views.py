@@ -42,13 +42,13 @@ def Home(request):
 	'ObjProducto4':ObjProducto4,
 	'ObjProducto5':ObjProducto5})
 
-def reviewsAsociadosUsuario(reviewername):
+def reviewsAsociadosUsuario(reviewername,reviewerid):
 	try:
 		conn = psycopg2.connect("dbname='tienda_bd' user='postgres' host='localhost' password='jhon'")
 		print("Conexion a la base de datos exitosa desde reviewsAsociadosUsuario \n")
 	except:
 		print ("I am unable to connect to the database")
-	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewername='"""+reviewername+"""'"""
+	query = """SELECT * FROM reviews_amazon_dataset r  WHERE reviewername='"""+reviewername+"""'"""+""" AND reviewername='"""+reviewername+"""'""" +""" AND asin != 'sinAsin' """
 	data_query = pd.read_sql(query, conn)
 	return data_query
 
@@ -58,14 +58,20 @@ def vistaRecomendacionKnn(request):
 	print("***************************")
 	print("Entro a Recomendacion KNN")
 	user = getUserConsultaGlobal()
-	reviewsAsociados = reviewsAsociadosUsuario(user.reviewername)
+	print("reviewerName: "+str(user.reviewername))
+	print("reviewerID: "+str(user.reviewerid))
 	asinValido = 'sinAsin'
-	print("Review Asociado KNN")
-	for i in range(0,len(reviewsAsociados)):
-		if reviewsAsociados.asin.get(i) != 'sinAsin':
-			asinValido = reviewsAsociados.asin.get(i)
-			user = reviewsAsociados.get(i)
-	print("Asin valido seleccionado: "+asinValido)
+	reviewsAsociados = reviewsAsociadosUsuario(user.reviewername,user.reviewerid)
+	if reviewsAsociados.empty:
+		asinValido = 'sinAsin'
+	else:
+		print("Revies Asociados")
+		print(reviewsAsociados)
+		asinValido = str(reviewsAsociados.asin.get(0))
+		print("Asin valido seleccionado: "+asinValido)
+		if asinValido is None:
+			asinValido = 'sinAsin'
+			print("Asin valido seleccionado: "+asinValido)
 	if asinValido == 'sinAsin':
 		print("No hay recomendaciones que mostrar")
 		ObjProducto1 = None
@@ -92,6 +98,8 @@ def vistaRecomendacionKnn(request):
 	else:
 		# Del review se extrae el usuario, y el asin (id producto) asociado a ese review de compra
 	 	# con respecto al cual se realizara la recomendacion
+		asinconsultar = asinValido
+		"""
 		asinconsultar = user.asin.asin
 		print("objeto asin consultar")
 		print("ID:"+" "+user.asin.asin)
@@ -99,6 +107,7 @@ def vistaRecomendacionKnn(request):
 		print("Descripcion:"+" "+user.asin.description)
 		print("Marca:"+" "+user.asin.brand)
 		print("Categorias:"+" "+user.asin.categories)
+		"""
 		rec = RecomendacionKnn(asinconsultar) # rec contiene rec=[[lista_id_productos],[lista_distanciasknn_productos]]
 		asinlist = rec[0] # extrae los id de los productos recomendados
 		distanceslist = rec[1] # extrae las distancias knn de los productos recomendados
@@ -153,14 +162,19 @@ def vistaRecomendacionSvd(request):
 	print("***************************")
 	print("Entro a Recomendacion SVD")
 	user = getUserConsultaGlobal()
-	reviewsAsociados = reviewsAsociadosUsuario(user.reviewername)
-	asinValido = 'sinAsin'
-	print("Review Asociado SVD")
-	for i in range(0,len(reviewsAsociados)):
-		if reviewsAsociados.asin.get(i) != 'sinAsin':
-			asinValido = reviewsAsociados.asin.get(i)
-			user = reviewsAsociados.get(i)
-	print("Asin valido seleccionado: "+asinValido)
+	print("reviewerName: "+str(user.reviewername))
+	print("reviewerID: "+str(user.reviewerid))
+	reviewsAsociados = reviewsAsociadosUsuario(user.reviewername,user.reviewerid)
+	if reviewsAsociados.empty:
+		asinValido = 'sinAsin'
+	else:
+		print("Revies Asociados")
+		print(reviewsAsociados)
+		asinValido = str(reviewsAsociados.asin.get(0))
+		print("Asin valido seleccionado: "+asinValido)
+		if asinValido is None:
+			asinValido = 'sinAsin'
+			print("Asin valido seleccionado: "+asinValido)
 	if asinValido == 'sinAsin':
 		print("No hay recomendaciones que mostrar")
 		ObjProducto1 = None
@@ -185,6 +199,8 @@ def vistaRecomendacionSvd(request):
 		'ObjProducto9':ObjProducto9,
 		'ObjProducto10':ObjProducto10})
 	else:
+		asinconsultar = asinValido
+		"""
 		asinconsultar = user.asin.asin
 		print("objeto asin consultar")
 		print("ID:"+" "+user.asin.asin)
@@ -192,6 +208,7 @@ def vistaRecomendacionSvd(request):
 		print("Descripcion:"+" "+user.asin.description)
 		print("Marca:"+" "+user.asin.brand)
 		print("Categorias:"+" "+user.asin.categories)
+		"""
 		asinlist= []
 		rec_svd = recomendacionColaborativaSVD(asinconsultar)
 		for i in range(0,len(rec_svd)):
