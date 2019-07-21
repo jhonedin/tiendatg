@@ -316,7 +316,7 @@ def galeriaProducto(request):
 	indexListAsin = []
 	objGaleriaList = []
 	indexListAsin = ratings_pivot.index
-	for i in range(0,100):
+	for i in range(0,150):
 		objProducto = productoSql(indexListAsin[i])
 		producto = [str(objProducto.asin.get(0)),
 				str(objProducto.title.get(0)),
